@@ -4,7 +4,7 @@
 
 ---
 
-## License for NSec
+## License Notice for NSec
 
 MIT License
 

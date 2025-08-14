@@ -11,7 +11,7 @@
 
 `WireGuardTools` ist eine Sammlung von Werkzeugen für .NET, die die Arbeit mit WireGuard-Konfigurationen und -Schlüsseln vereinfachen soll.
 
-*(Hier könntest du das Ziel des Projekts noch etwas genauer beschreiben.)*
+*(Hier etwas genauer beschreiben.)*
 
 **Dieses Projekt befindet sich in einem sehr frühen Entwicklungsstadium.** Der Code wird derzeit aktiv entwickelt.
 
@@ -20,9 +20,6 @@
 Obwohl der Code noch nicht fertig ist, sind folgende Funktionen geplant:
 
 * Erzeugen von WireGuard-Schlüsselpaaren (Private/Public Key)
-* Parsen von `.conf` Konfigurationsdateien
-* Erstellen und Modifizieren von Konfigurationen über eine API
-* Validierung von Schlüsseln und IP-Adressen
 
 ## Installation
 
@@ -35,8 +32,6 @@ Sobald das Projekt auf NuGet veröffentlicht ist, kann es wie folgt installiert 
 *(Dieser Abschnitt dient vorerst als Platzhalter.)*
 
 ## Verwendung
-
-*(Hier kommt später ein Code-Beispiel hin, wie man die Bibliothek verwendet.)*
 
 ```csharp
 // Beispiel-Code wird hinzugefügt, sobald die erste Version fertig ist.

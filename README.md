@@ -29,7 +29,7 @@ Obwohl der Code noch nicht fertig ist, sind folgende Funktionen geplant:
 Sobald das Projekt auf NuGet veröffentlicht ist, kann es wie folgt installiert werden:
 
 ```powershell
-dotnet add package WireGuardTools
+// Beispiel-Code wird hinzugefügt, sobald die erste Version fertig ist.
 ```
 
 *(Dieser Abschnitt dient vorerst als Platzhalter.)*

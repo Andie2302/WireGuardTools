@@ -1,6 +1,6 @@
 ﻿[![Maintenance](https://img.shields.io/maintenance/yes/2025)](https://github.com/Andie2302/WireGuardTools)
 [![License](https://img.shields.io/github/license/andie2302/wireguardtools)](https://github.com/Andie2302/WireGuardTools/blob/master/LICENSE.md)
-[![License](https://img.shields.io/badge/Notices-File-lightgray)](https://github.com/Andie2302/WireGuardTools/blob/master/NOTICES.md)
+[![License](https://img.shields.io/badge/Notices-File-lightgray)](https://github.com/Andie2302/WireGuardTools/blob/master/NOTICE.md)
 
 -----
 

@@ -1,14 +1,14 @@
-﻿namespace WireGuardTools.Classes.Base;
+﻿using WireGuardTools.Classes.Static;
+
+namespace WireGuardTools.Classes.Base;
 
 public readonly record struct WgBaseKey
 {
-    public const int KeySize = 32;
-
     public WgBaseKey ( byte[] key )
     {
         ArgumentNullException.ThrowIfNull ( key );
 
-        if ( key.Length != KeySize ) { throw new ArgumentException ( $"WireGuard keys must be {KeySize} bytes long." , nameof ( key ) ); }
+        if ( key.Length != WgConstants.KeySize ) { throw new ArgumentException ( $"WireGuard keys must be {WgConstants.KeySize} bytes long." , nameof ( key ) ); }
 
         Key = key;
         KeyBase64 = Convert.ToBase64String ( key );
@@ -18,7 +18,6 @@ public readonly record struct WgBaseKey
     public byte[] Key { get; init; }
     public static implicit operator WgBaseKey ( byte[] key ) => new WgBaseKey ( key );
     public static implicit operator byte[] ( WgBaseKey key ) => key.Key;
-
     public void Deconstruct ( out byte[] key , out string keyBase64 )
     {
         key = Key;

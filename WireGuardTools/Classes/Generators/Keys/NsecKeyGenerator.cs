@@ -1,6 +1,5 @@
 ﻿using NSec.Cryptography;
 using WireGuardTools.Classes.Base;
-using WireGuardTools.Classes.Generators.Random;
 using WireGuardTools.Classes.Static;
 using WireGuardTools.Interfaces.Generators;
 

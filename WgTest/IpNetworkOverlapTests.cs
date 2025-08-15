@@ -9,7 +9,7 @@ public class IpNetworkOverlapTests
     [ InlineData ( "192.168.1.0/25" , "192.168.1.0/24" , false ) ]
     [ InlineData ( "192.168.1.0/24" , "192.168.2.0/24" , false ) ]
     [ InlineData ( "10.0.0.0/8" , "10.1.1.0/24" , true ) ]
-    public void Contains_Network_ShouldReturnCorrectResult ( string network1Cidr , string network2Cidr , bool expected )
+    public void Contains_Network_ShouldReturnCorrectResult( string network1Cidr , string network2Cidr , bool expected )
     {
         var network1 = IpNetwork.Parse ( network1Cidr );
         var network2 = IpNetwork.Parse ( network2Cidr );
@@ -20,7 +20,7 @@ public class IpNetworkOverlapTests
     [ InlineData ( "192.168.1.0/24" , "192.168.1.128/25" , true ) ]
     [ InlineData ( "192.168.1.0/24" , "192.168.2.0/24" , false ) ]
     [ InlineData ( "10.0.0.0/16" , "10.1.0.0/16" , true ) ]
-    public void Overlaps_ShouldReturnCorrectResult ( string network1Cidr , string network2Cidr , bool expected )
+    public void Overlaps_ShouldReturnCorrectResult( string network1Cidr , string network2Cidr , bool expected )
     {
         var network1 = IpNetwork.Parse ( network1Cidr );
         var network2 = IpNetwork.Parse ( network2Cidr );

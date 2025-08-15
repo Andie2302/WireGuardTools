@@ -42,7 +42,7 @@ public class IpNetworkRegressionTests
     [ InlineData ( "192.168.1.0/0" , 4294967294L ) ]
     [ InlineData ( "192.168.1.0/1" , 2147483646L ) ]
     [ InlineData ( "192.168.1.0/2" , 1073741822L ) ]
-    public void GetHostCount_LargeNetworks_ShouldNotOverflow ( string cidr , long expectedCount )
+    public void GetHostCount_LargeNetworks_ShouldNotOverflow( string cidr , long expectedCount )
     {
         var network = IpNetwork.Parse ( cidr );
         var hostCount = network.GetHostCount();

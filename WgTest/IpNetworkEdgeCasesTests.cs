@@ -26,7 +26,7 @@ public class IpNetworkEdgeCasesTests
     [ Theory ]
     [ InlineData ( "192.168.1.0/31" ) ]
     [ InlineData ( "192.168.1.0/32" ) ]
-    public void SpecialPrefixLengths_ShouldHandleCorrectly ( string cidr )
+    public void SpecialPrefixLengths_ShouldHandleCorrectly( string cidr )
     {
         var network = IpNetwork.Parse ( cidr );
         var hostCount = network.GetHostCount();
@@ -61,7 +61,7 @@ public class IpNetworkEdgeCasesTests
     [ Theory ]
     [ InlineData ( "224.0.0.0/4" , true ) ]
     [ InlineData ( "192.168.1.0/24" , false ) ]
-    public void IsMulticast_IPv4_ShouldReturnCorrectResult ( string cidr , bool expected )
+    public void IsMulticast_IPv4_ShouldReturnCorrectResult( string cidr , bool expected )
     {
         var network = IpNetwork.Parse ( cidr );
         Assert.Equal ( expected , network.IsMulticast );
@@ -70,7 +70,7 @@ public class IpNetworkEdgeCasesTests
     [ Theory ]
     [ InlineData ( "ff00::/8" , true ) ]
     [ InlineData ( "2001:db8::/32" , false ) ]
-    public void IsMulticast_IPv6_ShouldReturnCorrectResult ( string cidr , bool expected )
+    public void IsMulticast_IPv6_ShouldReturnCorrectResult( string cidr , bool expected )
     {
         var network = IpNetwork.Parse ( cidr );
         Assert.Equal ( expected , network.IsMulticast );
@@ -79,7 +79,7 @@ public class IpNetworkEdgeCasesTests
     [ Theory ]
     [ InlineData ( "169.254.1.0/24" , true ) ]
     [ InlineData ( "192.168.1.0/24" , false ) ]
-    public void IsLinkLocal_IPv4_ShouldReturnCorrectResult ( string cidr , bool expected )
+    public void IsLinkLocal_IPv4_ShouldReturnCorrectResult( string cidr , bool expected )
     {
         var network = IpNetwork.Parse ( cidr );
         Assert.Equal ( expected , network.IsLinkLocal );
@@ -88,7 +88,7 @@ public class IpNetworkEdgeCasesTests
     [ Theory ]
     [ InlineData ( "fe80::/10" , true ) ]
     [ InlineData ( "2001:db8::/32" , false ) ]
-    public void IsLinkLocal_IPv6_ShouldReturnCorrectResult ( string cidr , bool expected )
+    public void IsLinkLocal_IPv6_ShouldReturnCorrectResult( string cidr , bool expected )
     {
         var network = IpNetwork.Parse ( cidr );
         Assert.Equal ( expected , network.IsLinkLocal );

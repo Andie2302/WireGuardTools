@@ -10,7 +10,7 @@ public class IpNetworkHostCountTests
     [ InlineData ( "192.168.1.0/31" , 2 ) ]
     [ InlineData ( "192.168.1.1/32" , 1 ) ]
     [ InlineData ( "10.0.0.0/8" , 16777214 ) ]
-    public void GetHostCount_IPv4_ShouldReturnCorrectCount ( string networkCidr , long expectedCount )
+    public void GetHostCount_IPv4_ShouldReturnCorrectCount( string networkCidr , long expectedCount )
     {
         var network = IpNetwork.Parse ( networkCidr );
         Assert.Equal ( expectedCount , network.GetHostCount() );

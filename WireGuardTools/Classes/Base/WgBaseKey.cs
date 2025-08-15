@@ -18,5 +18,10 @@ public readonly record struct WgBaseKey
     public byte[] Key { get; init; }
     public static implicit operator WgBaseKey ( byte[] key ) => new WgBaseKey ( key );
     public static implicit operator byte[] ( WgBaseKey key ) => key.Key;
-    public void Deconstruct ( out byte[] key ) { key = this.Key; }
+
+    public void Deconstruct ( out byte[] key , out string keyBase64 )
+    {
+        key = Key;
+        keyBase64 = KeyBase64;
+    }
 }

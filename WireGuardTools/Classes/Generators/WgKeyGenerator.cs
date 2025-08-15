@@ -19,9 +19,9 @@ public static class WgKeyGenerator
     {
         var presharedKeyBytes = new byte[ 32 ];
         System.Security.Cryptography.RandomNumberGenerator.Fill ( presharedKeyBytes );
+
         return new WgBaseKey ( presharedKeyBytes );
     }
 
     public static WgTunnel GenerateTunnelKeys() => new WgTunnel ( GenerateKeys() , GenerateKeys() , GeneratePresharedKey() );
-    
 }

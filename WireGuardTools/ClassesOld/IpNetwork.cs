@@ -5,7 +5,7 @@ namespace WireGuardTools.ClassesOld;
 
 public readonly struct IpNetwork : IEquatable< IpNetwork >
 {
-    public IPAddress NetworkAddress { get; }
+    public IPAddress? NetworkAddress { get; }
     public int PrefixLength { get; }
     public AddressFamily AddressFamily => NetworkAddress?.AddressFamily ?? AddressFamily.Unspecified;
     public IPAddress SubnetMask
@@ -34,7 +34,7 @@ public readonly struct IpNetwork : IEquatable< IpNetwork >
             return new IPAddress ( broadcastBytes );
         }
     }
-    public IPAddress FirstUsableAddress
+    public IPAddress? FirstUsableAddress
     {
         get
         {
@@ -79,7 +79,7 @@ public readonly struct IpNetwork : IEquatable< IpNetwork >
     public bool IsMulticast => NetworkAddress != null && ( AddressFamily == AddressFamily.InterNetwork ? NetworkAddress.GetAddressBytes()[0] >= 224 && NetworkAddress.GetAddressBytes()[0] <= 239 : NetworkAddress.IsIPv6Multicast );
     public bool IsLinkLocal => NetworkAddress != null && ( AddressFamily == AddressFamily.InterNetwork ? NetworkAddress.GetAddressBytes()[0] == 169 && NetworkAddress.GetAddressBytes()[1] == 254 : NetworkAddress.IsIPv6LinkLocal );
 
-    public IpNetwork ( IPAddress networkAddress , int prefixLength )
+    public IpNetwork ( IPAddress? networkAddress , int prefixLength )
     {
         NetworkAddress = networkAddress ?? throw new ArgumentNullException ( nameof ( networkAddress ) );
         var maxPrefixLength = networkAddress.AddressFamily == AddressFamily.InterNetwork ? 32 : 128;
@@ -118,7 +118,7 @@ public readonly struct IpNetwork : IEquatable< IpNetwork >
         catch { return false; }
     }
 
-    public bool Contains ( IPAddress ipAddress )
+    public bool Contains ( IPAddress? ipAddress )
     {
         if ( ipAddress == null || NetworkAddress == null ) { return false; }
 
@@ -178,7 +178,7 @@ public readonly struct IpNetwork : IEquatable< IpNetwork >
         return maskBytes;
     }
 
-    private static IPAddress GetNetworkAddress ( IPAddress ipAddress , int prefixLength )
+    private static IPAddress? GetNetworkAddress ( IPAddress ipAddress , int prefixLength )
     {
         var ipBytes = ipAddress.GetAddressBytes();
         var addressLength = ipAddress.AddressFamily == AddressFamily.InterNetwork ? 4 : 16;

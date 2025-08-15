@@ -22,16 +22,16 @@ public static class WgKeyGenerator
 
         return new WgBaseKey ( presharedKeyBytes );
     }
-    private static WgTunnel GenerateTunnelKey(WgKeys serverKeys) => new WgTunnel ( serverKeys , GenerateKeys() , GeneratePresharedKey() );
 
-    public static List< WgTunnel > GenerateTunnelKeys ( int count )
+    private static WgTunnelKeys GenerateTunnelKey ( WgKeys serverKeys ) => new WgTunnelKeys ( serverKeys , GenerateKeys() , GeneratePresharedKey() );
+
+    public static List< WgTunnelKeys > GenerateTunnelKeys ( int count )
     {
-        var tunnels = new List< WgTunnel >();
+        var tunnels = new List< WgTunnelKeys >();
         var serverKey = GenerateKeys();
-        for ( var i = 0 ; i < count ; i++ ) {
-            tunnels.Add ( GenerateTunnelKey ( serverKey ) );
-        }
+
+        for ( var i = 0 ; i < count ; i++ ) { tunnels.Add ( GenerateTunnelKey ( serverKey ) ); }
+
         return tunnels;
     }
-    
 }

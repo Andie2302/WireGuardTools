@@ -5,11 +5,12 @@ using WireGuardTools.Classes.Generators;
 Console.WriteLine ( "Hello, World!" );
 var tunnel = WgKeyGenerator.GenerateTunnelKeys ( 5 );
 
-foreach ( var wgTunnel in tunnel ) {
-    Console.WriteLine ( "Client.PrivateKey: " + wgTunnel.Client.PrivateKey.KeyBase64 );
-    Console.WriteLine ( "Client.PublicKey: " + wgTunnel.Client.PublicKey.KeyBase64 );
-    Console.WriteLine ( "Server.PrivateKey: " + wgTunnel.Server.PrivateKey.KeyBase64 );
-    Console.WriteLine ( "Server.PublicKey: " + wgTunnel.Server.PublicKey.KeyBase64 );
-    Console.WriteLine ( "PresharedKey: " + wgTunnel.PresharedKey.KeyBase64 );
+var clients = WgConfigGenerator.GenerateClientConfigs ( tunnel,"10.0.0.1","1.1.1.1" );
+var server = WgConfigGenerator.GenerateServerConfig ( tunnel,"10.0.0.1",51820 );
+
+Console.WriteLine ( server );
+Console.WriteLine();
+foreach ( var (_ , value) in clients ) {
+    Console.WriteLine ( value );
     Console.WriteLine();
 }

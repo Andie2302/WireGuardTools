@@ -1,5 +1,5 @@
 ﻿using System.Net.Sockets;
-using WireGuardTools.Scraps;
+using WireGuardTools.ClassesOld;
 
 namespace WgTest;
 

@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 
-namespace WireGuardTools.Scraps;
+namespace WireGuardTools.ClassesOld;
 
 public readonly struct IpNetwork : IEquatable< IpNetwork >
 {

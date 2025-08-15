@@ -1,5 +1,5 @@
 ﻿using NSec.Cryptography;
-using WireGuardTools.ClassesOld.Base;
+using WireGuardTools.Classes.Base;
 
 namespace WireGuardTools.ClassesOld.Generators;
 

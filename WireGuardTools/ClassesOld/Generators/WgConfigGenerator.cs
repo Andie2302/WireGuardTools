@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using WireGuardTools.ClassesOld.Base;
+using WireGuardTools.Classes.Base;
 
 namespace WireGuardTools.ClassesOld.Generators;
 

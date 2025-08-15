@@ -1,4 +1,4 @@
-﻿namespace WireGuardTools.Scraps;
+﻿namespace WireGuardTools.ClassesOld;
 
 public class IpSubnetChecker
 {

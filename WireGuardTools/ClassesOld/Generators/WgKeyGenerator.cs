@@ -1,18 +1,8 @@
 ﻿using NSec.Cryptography;
 using WireGuardTools.Classes.Base;
+using WireGuardTools.Classes.Static;
 
 namespace WireGuardTools.ClassesOld.Generators;
-
-public static class WgConstants
-{
-    public const int KeySize = 32;
-    public const int DefaultListenPort = 51820;
-}
-
-public static class WgUtility
-{
-    public static byte[] CreateKeySizedArray() => new byte[ WgConstants.KeySize ];
-}
 
 public static class WgKeyGenerator
 {

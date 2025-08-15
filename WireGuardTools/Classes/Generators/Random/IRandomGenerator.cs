@@ -1,4 +1,4 @@
-﻿namespace WireGuardTools.ClassesOld.Generators.Random;
+﻿namespace WireGuardTools.Classes.Generators.Random;
 
 public interface IRandomGenerator
 {

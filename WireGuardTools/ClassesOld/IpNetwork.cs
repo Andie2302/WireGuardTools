@@ -212,7 +212,7 @@ public readonly struct IpNetwork : IEquatable< IpNetwork >
 
     #region Equality and ToString
     public bool Equals ( IpNetwork other ) { return NetworkAddress?.Equals ( other.NetworkAddress ) == true && PrefixLength == other.PrefixLength; }
-    public override bool Equals ( object obj ) { return obj is IpNetwork other && Equals ( other ); }
+    public override bool Equals ( object? obj ) { return obj is IpNetwork other && Equals ( other ); }
     public override int GetHashCode() { return HashCode.Combine ( NetworkAddress , PrefixLength ); }
     public static bool operator == ( IpNetwork left , IpNetwork right ) { return left.Equals ( right ); }
     public static bool operator != ( IpNetwork left , IpNetwork right ) { return !left.Equals ( right ); }

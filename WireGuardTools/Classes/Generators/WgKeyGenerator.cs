@@ -1,5 +1,6 @@
 ﻿using WireGuardTools.Classes.Base;
 using WireGuardTools.Classes.Generators.Keys;
+using WireGuardTools.Interfaces.Generators;
 
 namespace WireGuardTools.Classes.Generators;
 

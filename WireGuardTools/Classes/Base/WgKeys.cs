@@ -1,3 +1,3 @@
 ﻿namespace WireGuardTools.Classes.Base;
 
-public record struct WgKeys ( WgBaseKey PrivateKey , WgBaseKey PublicKey );
+public readonly record struct WgKeys ( WgBaseKey PrivateKey , WgBaseKey PublicKey );

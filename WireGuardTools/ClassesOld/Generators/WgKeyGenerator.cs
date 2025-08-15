@@ -3,6 +3,17 @@ using WireGuardTools.Classes.Base;
 
 namespace WireGuardTools.ClassesOld.Generators;
 
+public static class WgConstants
+{
+    public const int KeySize = 32;
+    public const int DefaultListenPort = 51820;
+}
+
+public static class WgUtility
+{
+    public static byte[] CreateKeySizedArray() => new byte[ WgConstants.KeySize ];
+}
+
 public static class WgKeyGenerator
 {
     private static WgKeys GenerateKeys()
@@ -17,7 +28,7 @@ public static class WgKeyGenerator
 
     private static WgBaseKey GeneratePresharedKey()
     {
-        var presharedKeyBytes = new byte[ 32 ];
+        var presharedKeyBytes = WgUtility.CreateKeySizedArray();
         System.Security.Cryptography.RandomNumberGenerator.Fill ( presharedKeyBytes );
 
         return new WgBaseKey ( presharedKeyBytes );

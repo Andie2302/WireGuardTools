@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using WireGuardTools.Classes.Base;
+using WireGuardTools.ClassesOld.Base;
 
-namespace WireGuardTools.Classes.Generators;
+namespace WireGuardTools.ClassesOld.Generators;
 
 public static class WgConfigGenerator
 {

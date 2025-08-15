@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using WireGuardTools.Classes.Generators;
+using WireGuardTools.ClassesOld.Generators;
 
 Console.WriteLine ( "Hello, World!" );
 var tunnel = WgKeyGenerator.GenerateTunnelKeys ( 5 );

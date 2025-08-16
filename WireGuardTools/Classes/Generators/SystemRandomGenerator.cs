@@ -1,6 +1,6 @@
 ﻿using WireGuardTools.Interfaces.Generators;
 
-namespace WireGuardTools.Classes.Generators.Random;
+namespace WireGuardTools.Classes.Generators;
 
 public sealed class SystemRandomGenerator : IRandomGenerator
 {

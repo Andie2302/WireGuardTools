@@ -1,9 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿
 
 using WireGuardTools.Classes.Generators;
-using WireGuardTools.Classes.Generators.Keys;
-using WireGuardTools.Classes.Generators.Random;
-using WireGuardTools.ClassesOld.Generators;
 
 Console.WriteLine ( "Hello, World!" );
 

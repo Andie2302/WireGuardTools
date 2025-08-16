@@ -1,4 +1,4 @@
-﻿using WireGuardTools.Interfaces.Generators;
+﻿using WireGuardTools.Interfaces;
 
 namespace WireGuardTools.Classes.Generators;
 

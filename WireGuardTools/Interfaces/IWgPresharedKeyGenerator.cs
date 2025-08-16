@@ -1,6 +1,6 @@
 ﻿using WireGuardTools.Classes.Base;
 
-namespace WireGuardTools.Interfaces.Generators;
+namespace WireGuardTools.Interfaces;
 
 public interface IWgPresharedKeyGenerator
 {

@@ -1,4 +1,4 @@
-﻿namespace WireGuardTools.Interfaces.Generators;
+﻿namespace WireGuardTools.Interfaces;
 
 public interface IRandomGenerator
 {

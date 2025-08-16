@@ -1,11 +1,11 @@
 ﻿using NSec.Cryptography;
 using WireGuardTools.Classes.Base;
 using WireGuardTools.Classes.Static;
-using WireGuardTools.Interfaces.Generators;
+using WireGuardTools.Interfaces;
 
 namespace WireGuardTools.Classes.Generators;
 
-public sealed class NsecKeyGenerator ( IRandomGenerator randomGenerator ) : IWgKeyGenerator
+public sealed class NsecKeyEngine ( IRandomGenerator randomGenerator ) : IWgKeyEngine
 {
     public WgKeys GenerateKeyPair()
     {

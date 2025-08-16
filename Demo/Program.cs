@@ -1,6 +1,7 @@
 ﻿
 using WireGuardTools.Classes;
-using WireGuardTools.Classes.Generators;
+using WireGuardTools.Classes.Engines;
+using WireGuardTools.Classes.Random;
 
 Console.WriteLine ( "Hello, World!" );
 

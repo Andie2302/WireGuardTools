@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using WireGuardTools.ClassesOld;
 
 namespace WgTest;
 

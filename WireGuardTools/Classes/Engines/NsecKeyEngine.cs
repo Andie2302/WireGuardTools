@@ -3,7 +3,7 @@ using WireGuardTools.Classes.Base;
 using WireGuardTools.Classes.Static;
 using WireGuardTools.Interfaces;
 
-namespace WireGuardTools.Classes.Generators;
+namespace WireGuardTools.Classes.Engines;
 
 public sealed class NsecKeyEngine ( IRandomGenerator randomGenerator ) : IWgKeyEngine
 {

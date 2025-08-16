@@ -1,34 +1,7 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.Text;
 using WireGuardTools.Classes.Base;
 
 namespace WireGuardTools.Classes.Builders;
-
-public class IpNetwork
-{
-    private AddressFamily _addressFamily;
-    public static IpNetwork Parse ( string cidrAddress ) => throw new NotImplementedException();
-    public bool Contains ( IPAddress ip )
-    {
-        throw new NotImplementedException();
-    }
-    public bool Contains ( string text )
-    {
-        throw new NotImplementedException();
-    }
-
-    public long GetHostCount()
-    {
-        throw new NotImplementedException();
-    }
-
-    public AddressFamily AddressFamily
-    {
-        get { return _addressFamily; }
-        set { _addressFamily = value; }
-    }
-}
 
 public class WgConfigBuilder : IWgConfigBuilder
 {
@@ -98,59 +71,4 @@ public class WgConfigBuilder : IWgConfigBuilder
 
         return builder.ToString().Trim();
     }
-}
-
-internal class WgPeerBuilder : IWgPeerBuilder
-{
-    private readonly StringBuilder _peerConfig = new StringBuilder();
-
-    public WgPeerBuilder ( WgBaseKey publicKey )
-    {
-        _peerConfig.AppendLine ( "[Peer]" );
-        _peerConfig.AppendLine ( $"PublicKey = {publicKey.KeyBase64}" );
-    }
-
-    public IWgPeerBuilder WithPresharedKey ( WgBaseKey presharedKey )
-    {
-        _peerConfig.AppendLine ( $"PresharedKey = {presharedKey.KeyBase64}" );
-        return this;
-    }
-
-    public IWgPeerBuilder WithEndpoint ( string endpoint )
-    {
-        _peerConfig.AppendLine ( $"Endpoint = {endpoint}" );
-        return this;
-    }
-
-    public IWgPeerBuilder WithAllowedIp ( string cidrAddress )
-    {
-        _peerConfig.AppendLine ( $"AllowedIPs = {IpNetwork.Parse ( cidrAddress )}" );
-        return this;
-    }
-
-    public IWgPeerBuilder WithPersistentKeepalive ( int seconds )
-    {
-        _peerConfig.AppendLine ( $"PersistentKeepalive = {seconds}" );
-        return this;
-    }
-
-    internal string Build() => _peerConfig.ToString();
-}
-
-public interface IWgConfigBuilder
-{
-    IWgConfigBuilder WithPrivateKey ( WgBaseKey privateKey );
-    IWgConfigBuilder WithAddress ( string cidrAddress );
-    IWgConfigBuilder WithListenPort ( int port );
-    IWgConfigBuilder WithDns ( string dnsServer );
-    IWgConfigBuilder AddPeer ( WgBaseKey publicKey , Action< IWgPeerBuilder > peerConfig );
-    string Build();
-}
-
-public interface IWgPeerBuilder
-{
-    IWgPeerBuilder WithPresharedKey ( WgBaseKey presharedKey );
-    IWgPeerBuilder WithEndpoint ( string endpoint );
-    IWgPeerBuilder WithAllowedIp ( string cidrAddress );
-    IWgPeerBuilder WithPersistentKeepalive ( int seconds );
 }

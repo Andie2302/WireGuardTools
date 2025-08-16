@@ -1,19 +1,16 @@
-﻿using WireGuardTools.Classes.Base;
-using WireGuardTools.Interfaces.Generators;
+﻿
+/*
 
-namespace WireGuardTools.Classes.Generators;
-
-public class WgKeyGenerator ( IWgKeyGenerator wgKeyGenerator )
-{
-    private WgTunnelKeys GenerateTunnelKey ( WgKeys serverKeys ) => new WgTunnelKeys ( serverKeys , wgKeyGenerator.GenerateKeyPair() , wgKeyGenerator.GeneratePresharedKey() );
+    private WgTunnelKeys GenerateTunnelKey ( WgKeys serverKeys ) => new WgTunnelKeys ( serverKeys , wgKeyPairGenerator.GenerateKeyPair() , wgPresharedKeyGenerator.GeneratePresharedKey ( randomGenerator ) );
 
     public List< WgTunnelKeys > GenerateTunnelKeys ( int count )
     {
         var tunnels = new List< WgTunnelKeys >();
-        var serverKey = wgKeyGenerator.GenerateKeyPair();
+        var serverKey = wgKeyPairGenerator.GenerateKeyPair();
 
         for ( var i = 0 ; i < count ; i++ ) { tunnels.Add ( GenerateTunnelKey ( serverKey ) ); }
 
         return tunnels;
     }
-}
+
+//*/

@@ -16,6 +16,6 @@ public sealed class NsecKeyGenerator ( IRandomGenerator randomGenerator ) : IWgK
 
         return new WgKeys ( new WgBaseKey ( privateKeyBytes ) , new WgBaseKey ( publicKeyBytes ) );
     }
-
-    public WgBaseKey GeneratePresharedKey() => new WgBaseKey ( randomGenerator.GetBytes ( WgConstants.KeySize ) );
+    public IRandomGenerator RandomGenerator { get; init; } = randomGenerator;
+    public WgBaseKey GeneratePresharedKey() => new WgBaseKey ( RandomGenerator.GetBytes ( WgConstants.KeySize ) );
 }

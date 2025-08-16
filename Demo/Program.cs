@@ -8,8 +8,8 @@ using WireGuardTools.ClassesOld.Generators;
 Console.WriteLine ( "Hello, World!" );
 
 var random = new SystemRandomGenerator();
-var generator = new NsecKeyGenerator(random);
-var wgKeyGenerator = new WgKeyGenerator(generator);
+var generator = new PreSharedKeyGenerator();
+var wgKeyGenerator = new WgKeyGenerat
 
 var tunnel = wgKeyGenerator.GenerateTunnelKeys ( 5 );
 

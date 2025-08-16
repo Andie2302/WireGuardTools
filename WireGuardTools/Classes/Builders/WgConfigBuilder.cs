@@ -19,7 +19,7 @@ public class WgConfigBuilder : IWgConfigBuilder
 
     public IWgConfigBuilder WithAddress ( string cidrAddress )
     {
-        _addresses.Add ( IpNetwork.Parse ( cidrAddress ) );
+        //_addresses.Add ( IpNetwork.Parse ( cidrAddress ) );
         return this;
     }
 

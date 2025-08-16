@@ -27,7 +27,7 @@ internal class WgPeerBuilder : IWgPeerBuilder
 
     public IWgPeerBuilder WithAllowedIp ( string cidrAddress )
     {
-        _peerConfig.AppendLine ( $"AllowedIPs = {IpNetwork.Parse ( cidrAddress )}" );
+        //_peerConfig.AppendLine ( $"AllowedIPs = {IpNetwork.Parse ( cidrAddress )}" );
         return this;
     }
 

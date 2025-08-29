@@ -95,8 +95,8 @@ You can verify the generated keys work with the official WireGuard tools:
 # Generate a key pair with WireGuardTools
 # Private: eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=
 
-# Verify with wg command
-echo "eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=" | wg pubkey
+# Verify with wg command 
+echo eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc= | wg pubkey
 # Output: GL16o84YrQrHy7Ew7bmwDPM27MnilJ/y7bG4wyhUuGo=
 ```
 
@@ -137,10 +137,6 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-
-This library uses Curve25519 elliptic curve parameters based on RFC 7748 and StackOverflow contributions. See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for detailed acknowledgments.
 
 ## Support
 

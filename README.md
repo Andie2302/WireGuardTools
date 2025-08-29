@@ -4,12 +4,18 @@ A .NET library for generating WireGuard-compatible Curve25519 key pairs using na
 
 ## Features
 
-- 🔐 **Native .NET Implementation** - Uses `ECDiffieHellmanCng` with Curve25519 parameters
+- 🔐 **Native .NET Implementation** - Uses `ECDiffieHellman.Create()` with built-in Curve25519 support
+- 🌐 **Cross-Platform** - Works on Windows, Linux, and macOS without platform-specific dependencies
 - 🚀 **No External Dependencies** - Pure .NET implementation without additional crypto libraries
 - ✅ **WireGuard Compatible** - Generates keys that work seamlessly with the official WireGuard tools
 - 🎯 **Multi-Target Support** - Compatible with .NET 6, 7, 8, and 9 (including Windows variants)
 - 📝 **Well Documented** - Comprehensive XML documentation for all public APIs
 
+
+### PackageReference
+```xml
+<PackageReference Include="WireGuardTools" Version="1.0.0" />
+```
 
 ## Quick Start
 
@@ -96,14 +102,14 @@ You can verify the generated keys work with the official WireGuard tools:
 # Private: eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=
 
 # Verify with wg command 
-echo eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc= | wg pubkey
+echo "eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=" | wg pubkey
 # Output: GL16o84YrQrHy7Ew7bmwDPM27MnilJ/y7bG4wyhUuGo=
 ```
 
 ## Requirements
 
-- **.NET 6.0 or higher** (including Windows variants)
-- Curve25519 support requires modern .NET runtime
+- **.NET 6.0 or higher** - Cross-platform support on Windows, Linux, and macOS
+- Built-in Curve25519 support in modern .NET runtime
 
 ### Supported Frameworks
 
@@ -117,18 +123,28 @@ echo eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc= | wg pubkey
 
 ## Performance
 
-The library uses native Windows CNG (Cryptography Next Generation) APIs through `ECDiffieHellmanCng` for optimal performance:
+The library uses the native .NET cryptography stack with optimal performance characteristics:
 
-- ⚡ **Fast key generation** - Leverages hardware acceleration when available
+- ⚡ **Fast key generation** - Leverages platform-optimized implementations
 - 🔒 **Cryptographically secure** - Uses system entropy sources
 - 💾 **Memory efficient** - Lazy enumeration for multiple key generation
+- 🌐 **Cross-platform optimized** - Automatically uses the best available crypto provider
+
+## Platform Support
+
+| Platform | Implementation | Notes |
+|----------|---------------|-------|
+| **Windows** | CNG (Cryptography Next Generation) | Hardware acceleration when available |
+| **Linux** | OpenSSL | Native performance with system crypto libraries |
+| **macOS** | Security Framework | Optimized for Apple silicon and Intel |
 
 ## Security Considerations
 
 - Keys are generated using cryptographically secure random number generators
 - Private keys should be handled securely and cleared from memory when no longer needed
 - The library follows RFC 7748 Curve25519 specifications
-- No custom cryptographic implementations - relies on proven .NET Framework crypto APIs
+- Uses proven platform-native cryptographic implementations
+- No custom cryptographic code - relies entirely on .NET Framework crypto APIs
 
 ## Contributing
 
@@ -136,7 +152,7 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 

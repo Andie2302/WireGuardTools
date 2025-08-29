@@ -18,9 +18,8 @@ public class WgKeyPairGenerator
         var publicKeyBytes = new byte[WgTools.KeySize];
         byte[] privateKeyBytes;
 
-        using ( var ecdh = new ECDiffieHellmanCng() )
+        using (var ecdh = ECDiffieHellman.Create(ECCurve.CreateFromFriendlyName("curve25519")))
         {
-            ecdh.GenerateKey(WgCurve25519Constants.Curve25519);
             var keyParameters = ecdh.ExportParameters(true);
 
             if (keyParameters.D == null || keyParameters.Q.X == null)
@@ -56,7 +55,7 @@ public class WgKeyPairGenerator
     /// <returns>An enumerable collection of <see cref="WgKeyPair"/> objects.</returns>
     public static IEnumerable<WgKeyPair> CreateMultipleKeyPairs(int count)
     {
-        for ( var i = 0 ; i < count ; i++ )
+        for (var i = 0; i < count; i++)
         {
             yield return CreateNewWgKeyPair();
         }

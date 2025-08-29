@@ -14,7 +14,7 @@ A .NET library for generating WireGuard-compatible Curve25519 key pairs using na
 
 ### PackageReference
 ```xml
-<PackageReference Include="WireGuardTools" Version="1.0.0" />
+<PackageReference Include="WireGuardTools" Version="0.0.1" />
 ```
 
 ## Quick Start

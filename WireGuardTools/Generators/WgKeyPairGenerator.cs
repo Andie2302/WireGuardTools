@@ -18,7 +18,6 @@ public class WgKeyPairGenerator
     {
         var publicKeyBytes = new byte[WgTools.KeySize];
         byte[] privateKeyBytes;
-
         using (var ecdh = ECDiffieHellman.Create(WgCurve25519Constants.Curve25519))
         {
             var keyParameters = ecdh.ExportParameters(true);
@@ -41,13 +40,6 @@ public class WgKeyPairGenerator
 
         return new WgKeyPair(privateKeyBytes, publicKeyBytes);
     }
-
-    /// <summary>
-    /// Converts a given byte array key to its Base64 string representation.
-    /// </summary>
-    /// <param name="key">The byte array representing the key to be converted.</param>
-    /// <returns>A Base64 encoded string representation of the provided key.</returns>
-    public static string KeyToBase64(byte[] key) => Convert.ToBase64String(key);
 
     /// <summary>
     /// Generates multiple WireGuard key pairs.

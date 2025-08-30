@@ -1,4 +1,7 @@
-﻿namespace WireGuardTools;
+﻿using System.Security.Cryptography;
+using WireGuardTools.Generators;
+
+namespace WireGuardTools;
 
 /// <summary>
 /// Represents a WireGuard compatible Curve25519 key pair.
@@ -50,4 +53,6 @@ public readonly record struct WgPeer
         this.PrivateKey = privateKey;
         this.PublicKey = publicKey;
     }
+
+    public static WgPeer CreateRandom() => WgPeerGenerator.Create();
 }

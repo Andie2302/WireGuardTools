@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using WireGuardTools.Generators.Constants;
 
 namespace WireGuardTools.Generators;
 
@@ -18,7 +19,7 @@ public class WgKeyPairGenerator
         var publicKeyBytes = new byte[WgTools.KeySize];
         byte[] privateKeyBytes;
 
-        using (var ecdh = ECDiffieHellman.Create(ECCurve.CreateFromFriendlyName("curve25519")))
+        using (var ecdh = ECDiffieHellman.Create(WgCurve25519Constants.Curve25519))
         {
             var keyParameters = ecdh.ExportParameters(true);
 

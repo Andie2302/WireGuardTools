@@ -6,15 +6,15 @@ namespace WireGuardTools.Generators;
 /// <summary>
 /// Provides functionality for generating WireGuard compatible Curve25519 key pairs.
 /// </summary>
-public class WgKeyPairGenerator
+public class WgPeerGenerator
 {
     /// <summary>
     /// Generates a new WireGuard compatible key pair using Curve25519.
     /// </summary>
     /// <returns>
-    /// A <see cref="WgKeyPair"/> object containing the generated private key and public key.
+    /// A <see cref="WgPeer"/> object containing the generated private key and public key.
     /// </returns>
-    public static WgKeyPair CreateNewWgKeyPair()
+    public static WgPeer Create()
     {
         var publicKeyBytes = new byte[WgTools.KeySize];
         byte[] privateKeyBytes;
@@ -38,19 +38,19 @@ public class WgKeyPairGenerator
             }
         }
 
-        return new WgKeyPair(privateKeyBytes, publicKeyBytes);
+        return new WgPeer(privateKeyBytes, publicKeyBytes);
     }
 
     /// <summary>
     /// Generates multiple WireGuard key pairs.
     /// </summary>
     /// <param name="count">The number of key pairs to generate.</param>
-    /// <returns>An enumerable collection of <see cref="WgKeyPair"/> objects.</returns>
-    public static IEnumerable<WgKeyPair> CreateMultipleKeyPairs(int count)
+    /// <returns>An enumerable collection of <see cref="WgPeer"/> objects.</returns>
+    public static IEnumerable<WgPeer> Create(int count)
     {
         for (var i = 0; i < count; i++)
         {
-            yield return CreateNewWgKeyPair();
+            yield return Create();
         }
     }
 }

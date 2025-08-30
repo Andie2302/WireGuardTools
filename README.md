@@ -11,22 +11,6 @@ A .NET library for generating WireGuard-compatible Curve25519 key pairs using na
 - 🎯 **Multi-Target Support** - Compatible with .NET 6, 7, 8, and 9 (including Windows variants)
 - 📝 **Well Documented** - Comprehensive XML documentation for all public APIs
 
-## Installation
-
-### Package Manager
-```bash
-Install-Package WireGuardTools
-```
-
-### .NET CLI
-```bash
-dotnet add package WireGuardTools
-```
-
-### PackageReference
-```xml
-<PackageReference Include="WireGuardTools" Version="1.0.0" />
-```
 
 ## Quick Start
 

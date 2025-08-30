@@ -4,7 +4,7 @@
 /// Represents a WireGuard compatible Curve25519 key pair.
 /// This type is immutable and performs validation on creation.
 /// </summary>
-public readonly record struct WgKeyPair
+public readonly record struct WgPeer
 {
     /// <summary>
     /// Gets the raw private key (32 bytes).
@@ -27,11 +27,11 @@ public readonly record struct WgKeyPair
     public string PublicKeyAsBase64 => Convert.ToBase64String(this.PublicKey);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WgKeyPair"/> struct with validation.
+    /// Initializes a new instance of the <see cref="WgPeer"/> struct with validation.
     /// </summary>
     /// <param name="privateKey">The 32-byte private key.</param>
     /// <param name="publicKey">The 32-byte public key.</param>
-    public WgKeyPair(byte[] privateKey, byte[] publicKey)
+    public WgPeer(byte[] privateKey, byte[] publicKey)
     {
         ArgumentNullException.ThrowIfNull(privateKey);
 

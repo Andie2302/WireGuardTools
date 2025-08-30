@@ -1,6 +1,6 @@
 ﻿# WireGuardTools
 
-A .NET library for generating WireGuard-compatible Curve25519 key pairs using native .NET cryptography APIs.
+A .NET library for generating WireGuard-compatible Curve25519 key pairs and managing WireGuard configurations using native .NET cryptography APIs.
 
 ## Features
 
@@ -10,70 +10,117 @@ A .NET library for generating WireGuard-compatible Curve25519 key pairs using na
 - ✅ **WireGuard Compatible** - Generates keys that work seamlessly with the official WireGuard tools
 - 🎯 **Multi-Target Support** - Compatible with .NET 6, 7, 8, and 9 (including Windows variants)
 - 📝 **Well Documented** - Comprehensive XML documentation for all public APIs
+- 🔑 **Flexible Key Management** - Support for individual keys, key pairs, and complete tunnel configurations
 
 ## Quick Start
 
 ### Basic Key Generation
 
 ```csharp
-using WireGuardTools.Generators;
+using WireGuardTools;
 
-// Generate a single key pair
-var keyPair = WgKeyPairGenerator.CreateNewWgKeyPair();
+// Generate a random key
+var key = WgKey.CreateRandom();
+Console.WriteLine($"Key: {key.KeyAsBase64}");
 
-Console.WriteLine($"Private Key: {keyPair.PrivateKeyAsBase64}");
-Console.WriteLine($"Public Key:  {keyPair.PublicKeyAsBase64}");
+// Create key from existing data
+var keyFromBase64 = WgKey.Create("eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=");
+var keyFromBytes = WgKey.Create(myByteArray);
 ```
 
-### Generate Multiple Key Pairs
+### Generate Key Pairs (Peers)
 
 ```csharp
-using WireGuardTools.Generators;
+using WireGuardTools;
 
-// Generate multiple key pairs efficiently
-foreach (var keyPair in WgKeyPairGenerator.CreateMultipleKeyPairs(5))
+// Generate a single peer (key pair)
+var peer = WgPeer.CreateRandom();
+Console.WriteLine($"Private Key: {peer.PrivateKeyAsBase64}");
+Console.WriteLine($"Public Key:  {peer.PublicKeyAsBase64}");
+
+// Generate multiple peers efficiently
+foreach (var peer in WgPeerGenerator.Create(5))
 {
-    Console.WriteLine($"Private: {keyPair.PrivateKeyAsBase64}");
-    Console.WriteLine($"Public:  {keyPair.PublicKeyAsBase64}");
+    Console.WriteLine($"Private: {peer.PrivateKeyAsBase64}");
+    Console.WriteLine($"Public:  {peer.PublicKeyAsBase64}");
     Console.WriteLine();
 }
 ```
 
-### Working with Raw Bytes
+### Complete Tunnel Configuration
 
 ```csharp
-using WireGuardTools.Generators;
 using WireGuardTools;
 
-var keyPair = WgKeyPairGenerator.CreateNewWgKeyPair();
+// Create a complete tunnel with random keys
+var tunnel = new WgTunnel();
+Console.WriteLine($"Local Private:  {tunnel.LocalPeer.PrivateKeyAsBase64}");
+Console.WriteLine($"Local Public:   {tunnel.LocalPeer.PublicKeyAsBase64}");
+Console.WriteLine($"Remote Private: {tunnel.RemotePeer.PrivateKeyAsBase64}");
+Console.WriteLine($"Remote Public:  {tunnel.RemotePeer.PublicKeyAsBase64}");
+Console.WriteLine($"Pre-shared Key: {tunnel.PreSharedKey?.KeyAsBase64}");
 
-// Access raw 32-byte arrays
-byte[] privateKeyBytes = keyPair.PrivateKey;
-byte[] publicKeyBytes = keyPair.PublicKey;
+// Create tunnel with specific peers
+var localPeer = WgPeer.CreateRandom();
+var remotePeer = WgPeer.CreateRandom();
+var preSharedKey = WgKey.CreateRandom();
+var customTunnel = new WgTunnel(localPeer, remotePeer, preSharedKey);
 
-// Convert to Base64 manually
-string privateKeyBase64 = keyPair.PrivateKeyAsBase64;
+// Deconstruct tunnel
+var (local, remote, psk) = customTunnel;
+```
 
-// The key size is defined as a constant
-Console.WriteLine($"Key size: {WgTools.KeySize} bytes");
+### Safe Logging
+
+```csharp
+using WireGuardTools;
+
+var key = WgKey.CreateRandom();
+
+// Safe for logs - shows only first 8 characters
+Console.WriteLine(key.ToString()); // WgKey[eLyH7Dze...]
+
+// Full key (use with caution)
+Console.WriteLine(key.ToFullString()); // WgKey[eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=]
 ```
 
 ## API Reference
 
-### WgKeyPairGenerator
+### WgKey
 
-Located in `WireGuardTools.Generators` namespace.
+A universal WireGuard key type for any 32-byte cryptographic key.
 
 #### Static Methods
 
 | Method | Description | Returns |
 |--------|-------------|---------|
-| `CreateNewWgKeyPair()` | Generates a new WireGuard compatible key pair | `WgKeyPair` |
-| `CreateMultipleKeyPairs(int count)` | Generates multiple key pairs efficiently using yield return | `IEnumerable<WgKeyPair>` |
+| `Create(byte[] key)` | Creates a WgKey from byte array | `WgKey` |
+| `Create(string base64Key)` | Creates a WgKey from Base64 string | `WgKey` |
+| `CreateRandom()` | Generates a cryptographically secure random key | `WgKey` |
 
-### WgKeyPair
+#### Properties
 
-A readonly record struct representing a WireGuard key pair with built-in validation.
+| Property | Type | Description |
+|----------|------|-------------|
+| `Key` | `byte[]` | Raw key bytes (32 bytes) |
+| `KeyAsBase64` | `string` | Key as Base64 string |
+
+#### Methods
+
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `ToString()` | Safe string representation for logging | `string` |
+| `ToFullString()` | Complete key representation (use with caution) | `string` |
+
+### WgPeer
+
+Represents a WireGuard peer with private and public key pair.
+
+#### Static Methods
+
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `CreateRandom()` | Generates a new random key pair | `WgPeer` |
 
 #### Properties
 
@@ -87,12 +134,47 @@ A readonly record struct representing a WireGuard key pair with built-in validat
 #### Constructor
 
 ```csharp
-public WgKeyPair(byte[] privateKey, byte[] publicKey)
+public WgPeer(byte[] privateKey, byte[] publicKey)
 ```
 
-- Validates that both keys are exactly 32 bytes in length
-- Throws `ArgumentNullException` if either key is null
-- Throws `ArgumentException` if either key has incorrect length
+### WgPeerGenerator
+
+Utility class for generating multiple peers efficiently.
+
+#### Static Methods
+
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `Create()` | Generates a single peer | `WgPeer` |
+| `Create(int count)` | Generates multiple peers with yield return | `IEnumerable<WgPeer>` |
+
+### WgTunnel
+
+Represents a complete WireGuard tunnel configuration.
+
+#### Constructor
+
+```csharp
+public WgTunnel(WgPeer? LocalPeer = null, WgPeer? RemotePeer = null, WgKey? PreSharedKey = null)
+```
+
+- All parameters are optional
+- If not provided, random keys/peers are generated automatically
+
+#### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `LocalPeer` | `WgPeer` | Local peer (server/client) |
+| `RemotePeer` | `WgPeer` | Remote peer (client/server) |
+| `PreSharedKey` | `WgKey?` | Optional pre-shared key for additional security |
+
+#### Methods
+
+```csharp
+// Deconstruction support
+var (local, remote, psk) = tunnel;
+```
 
 ### WgTools
 
@@ -117,7 +199,7 @@ This library generates keys that are fully compatible with:
 You can verify the generated keys work with the official WireGuard tools:
 
 ```bash
-# Generate a key pair with WireGuardTools
+# Generate a key with WireGuardTools
 # Private: eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=
 
 # Verify with wg command 
@@ -154,7 +236,7 @@ Key generation follows the standard process:
 1. Create ECDiffieHellman instance with Curve25519 parameters
 2. Export key parameters including private key (D) and public key (Q.X)
 3. Ensure proper key length (32 bytes) with padding if necessary
-4. Return validated WgKeyPair structure
+4. Return validated structures with immutable design
 
 ## Performance
 
@@ -165,6 +247,7 @@ The library uses the native .NET cryptography stack with consistent cross-platfo
 - 💾 **Memory efficient** - Lazy enumeration for multiple key generation using yield return
 - 🌐 **Cross-platform consistent** - Same RFC 7748 parameters on all platforms
 - ✅ **Input validation** - Runtime validation ensures key integrity
+- 🛡️ **Immutable design** - Defensive copying prevents accidental key modification
 
 ## Platform Support
 
@@ -184,7 +267,8 @@ The library uses the native .NET cryptography stack with consistent cross-platfo
 - Uses proven platform-native cryptographic implementations
 - Cross-platform compatibility ensured through explicit parameter specification
 - Built-in validation prevents malformed keys from being created
-- Immutable key pair structure prevents accidental modification
+- Immutable structures with defensive copying prevent accidental modification
+- Safe logging methods prevent accidental key exposure in logs
 
 ## Architecture
 
@@ -193,10 +277,51 @@ WireGuardTools/
 ├── Generators/
 │   ├── Constants/
 │   │   └── WgCurve25519Constants.cs    # RFC 7748 curve parameters
-│   └── WgKeyPairGenerator.cs           # Key generation logic
-├── WgKeyPair.cs                        # Immutable key pair structure
+│   └── WgPeerGenerator.cs              # Key pair generation logic
+├── WgKey.cs                            # Universal key type
+├── WgPeer.cs                           # Key pair (peer) structure
+├── WgTunnel.cs                         # Complete tunnel configuration
+├── WgPreSharedKey.cs                   # Legacy pre-shared key type
 └── WgTools.cs                          # Utility constants
 ```
+
+## Use Cases
+
+### Simple Key Management
+```csharp
+// Individual keys for configuration
+var serverKey = WgKey.CreateRandom();
+var clientKey = WgKey.CreateRandom();
+```
+
+### Peer-to-Peer Setup
+```csharp
+// Generate two peers for P2P connection
+var peer1 = WgPeer.CreateRandom();
+var peer2 = WgPeer.CreateRandom();
+```
+
+### Server with Multiple Clients
+```csharp
+var server = WgPeer.CreateRandom();
+var clients = WgPeerGenerator.Create(10).ToList();
+```
+
+### Complete Tunnel Setup
+```csharp
+// Ready-to-use tunnel configuration
+var tunnel = new WgTunnel();
+// All keys generated automatically
+```
+
+## Migration from Earlier Versions
+
+If upgrading from earlier versions:
+
+- `WgKeyPair` → Use `WgPeer`
+- `WgKeyPairGenerator` → Use `WgPeerGenerator`
+- Individual keys → Use `WgKey` instead of raw byte arrays
+- Pre-shared keys → Use `WgKey` instead of `WgPreSharedKey`
 
 ## Contributing
 

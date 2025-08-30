@@ -13,4 +13,5 @@ public static class WgTools
     /// consistency across key generation, encryption, and decryption operations in the WireGuard implementation.
     /// </remarks>
     public const int KeySize = 32;
+    
 }

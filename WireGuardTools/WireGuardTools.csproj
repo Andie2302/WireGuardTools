@@ -5,7 +5,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;net9.0</TargetFrameworks>
-        <Version>0.0.1</Version>
     </PropertyGroup>
 
 </Project>

@@ -50,8 +50,11 @@ public readonly record struct WgPeer
             throw new ArgumentException($"Public key must be {WgTools.KeySize} bytes long.", nameof(publicKey));
         }
 
-        this.PrivateKey = privateKey;
-        this.PublicKey = publicKey;
+        this.PrivateKey = new byte[WgTools.KeySize];
+        Array.Copy(privateKey, this.PrivateKey, WgTools.KeySize);
+
+        this.PublicKey = new byte[WgTools.KeySize];
+        Array.Copy(publicKey, this.PublicKey, WgTools.KeySize);
     }
 
     public static WgPeer CreateRandom() => WgPeerGenerator.Create();

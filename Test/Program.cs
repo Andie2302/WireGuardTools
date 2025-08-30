@@ -2,13 +2,10 @@
 
 using WireGuardTools.Generators;
 
-Console.WriteLine("Hello, World!");
-
-for ( var i = 0 ; i < 10 ; i++ )
+// Generate multiple key pairs efficiently
+foreach (var keyPair in WgKeyPairGenerator.CreateMultipleKeyPairs(5))
 {
-    Console.WriteLine($"KeyPair #{i}");
-    var pair = WgKeyPairGenerator.CreateNewWgKeyPair();
-    Console.WriteLine(pair.PrivateKeyAsBase64);
-    Console.WriteLine(pair.PublicKeyAsBase64);
+    Console.WriteLine($"Private: {keyPair.PrivateKeyAsBase64}");
+    Console.WriteLine($"Public:  {keyPair.PublicKeyAsBase64}");
     Console.WriteLine();
 }

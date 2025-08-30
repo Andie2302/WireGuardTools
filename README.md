@@ -1,29 +1,30 @@
 ﻿# WireGuardTools
 
-A .NET library for generating WireGuard-compatible Curve25519 key pairs and managing WireGuard configurations using native .NET cryptography APIs.
+A modern .NET library for generating WireGuard-compatible Curve25519 key pairs and managing tunnel configurations using native .NET cryptography APIs.
 
-## Features
+## ✨ Features
 
-- 🔐 **Native .NET Implementation** - Uses `ECDiffieHellman.Create()` with standardized Curve25519 parameters
-- 🌐 **Cross-Platform** - Works on Windows, Linux, and macOS without platform-specific dependencies
-- 🚀 **No External Dependencies** - Pure .NET implementation without additional crypto libraries
-- ✅ **WireGuard Compatible** - Generates keys that work seamlessly with the official WireGuard tools
-- 🎯 **Multi-Target Support** - Compatible with .NET 6, 7, 8, and 9 (including Windows variants)
-- 📝 **Well Documented** - Comprehensive XML documentation for all public APIs
-- 🔑 **Flexible Key Management** - Support for individual keys, key pairs, and complete tunnel configurations
+- 🔐 **Native .NET Implementation** - Uses standardized RFC 7748 Curve25519 parameters with `ECDiffieHellman`
+- 🌐 **Cross-Platform** - Works consistently on Windows, Linux, and macOS
+- 🚀 **Zero Dependencies** - Pure .NET implementation without external crypto libraries
+- ✅ **WireGuard Compatible** - Generates keys that work seamlessly with official WireGuard tools
+- 🎯 **Multi-Target Support** - Compatible with .NET 6-9 (including Windows variants)
+- 📝 **Comprehensive Documentation** - Full XML documentation for all public APIs
+- 🛡️ **Type-Safe & Immutable** - Modern C# record structs with defensive copying
+- ⚡ **High Performance** - Efficient key generation with yield return patterns
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Basic Key Generation
 
 ```csharp
 using WireGuardTools;
 
-// Generate a random key
+// Generate a secure random key
 var key = WgKey.CreateRandom();
 Console.WriteLine($"Key: {key.KeyAsBase64}");
 
-// Create key from existing data
+// Create from existing data
 var keyFromBase64 = WgKey.Create("eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=");
 var keyFromBytes = WgKey.Create(myByteArray);
 ```
@@ -33,7 +34,7 @@ var keyFromBytes = WgKey.Create(myByteArray);
 ```csharp
 using WireGuardTools;
 
-// Generate a single peer (key pair)
+// Generate a single peer (private/public key pair)
 var peer = WgPeer.CreateRandom();
 Console.WriteLine($"Private Key: {peer.PrivateKeyAsBase64}");
 Console.WriteLine($"Public Key:  {peer.PublicKeyAsBase64}");
@@ -60,76 +61,78 @@ Console.WriteLine($"Remote Private: {tunnel.RemotePeer.PrivateKeyAsBase64}");
 Console.WriteLine($"Remote Public:  {tunnel.RemotePeer.PublicKeyAsBase64}");
 Console.WriteLine($"Pre-shared Key: {tunnel.PreSharedKey?.KeyAsBase64}");
 
-// Create tunnel with specific peers
+// Create tunnel with specific configuration
 var localPeer = WgPeer.CreateRandom();
 var remotePeer = WgPeer.CreateRandom();
 var preSharedKey = WgKey.CreateRandom();
 var customTunnel = new WgTunnel(localPeer, remotePeer, preSharedKey);
 
-// Deconstruct tunnel
+// Deconstruct for easy access
 var (local, remote, psk) = customTunnel;
 ```
 
-### Safe Logging
+### Safe Logging & Security
 
 ```csharp
 using WireGuardTools;
 
 var key = WgKey.CreateRandom();
 
-// Safe for logs - shows only first 8 characters
-Console.WriteLine(key.ToString()); // WgKey[eLyH7Dze...]
+// Safe for production logs - shows only first 8 characters
+Console.WriteLine(key.ToString()); 
+// Output: WgKey[eLyH7Dze...]
 
-// Full key (use with caution)
-Console.WriteLine(key.ToFullString()); // WgKey[eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=]
+// Full key (use with caution in production)
+Console.WriteLine(key.ToFullString()); 
+// Output: WgKey[eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=]
 ```
 
-## API Reference
+## 📚 API Reference
 
 ### WgKey
 
-A universal WireGuard key type for any 32-byte cryptographic key.
+Universal WireGuard key type for any 32-byte cryptographic key with immutable design.
 
 #### Static Methods
 
 | Method | Description | Returns |
 |--------|-------------|---------|
-| `Create(byte[] key)` | Creates a WgKey from byte array | `WgKey` |
-| `Create(string base64Key)` | Creates a WgKey from Base64 string | `WgKey` |
-| `CreateRandom()` | Generates a cryptographically secure random key | `WgKey` |
+| `Create(byte[] key)` | Creates from byte array | `WgKey` |
+| `Create(string base64Key)` | Creates from Base64 string | `WgKey` |
+| `CreateRandom()` | Generates cryptographically secure random key | `WgKey` |
 
 #### Properties
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `Key` | `byte[]` | Raw key bytes (32 bytes) |
-| `KeyAsBase64` | `string` | Key as Base64 string |
+| `Key` | `byte[]` | Raw key bytes (32 bytes, defensive copy) |
+| `KeyAsBase64` | `string` | Base64 encoded key |
 
 #### Methods
 
 | Method | Description | Returns |
 |--------|-------------|---------|
-| `ToString()` | Safe string representation for logging | `string` |
+| `ToString()` | Safe representation for logging (truncated) | `string` |
 | `ToFullString()` | Complete key representation (use with caution) | `string` |
 
 ### WgPeer
 
-Represents a WireGuard peer with private and public key pair.
+Represents a WireGuard peer with Curve25519 key pair (immutable record struct).
 
 #### Static Methods
 
 | Method | Description | Returns |
 |--------|-------------|---------|
-| `CreateRandom()` | Generates a new random key pair | `WgPeer` |
+| `CreateRandom()` | Generates new random key pair | `WgPeer` |
 
 #### Properties
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `PrivateKey` | `byte[]` | Raw private key (32 bytes) |
-| `PublicKey` | `byte[]` | Raw public key (32 bytes) |
-| `PrivateKeyAsBase64` | `string` | Private key as Base64 string |
-| `PublicKeyAsBase64` | `string` | Public key as Base64 string |
+| `PrivateKey` | `byte[]` | Raw private key (32 bytes, defensive copy) |
+| `PublicKey` | `byte[]` | Raw public key (32 bytes, defensive copy) |
+| `PrivateKeyAsBase64` | `string` | Private key as Base64 |
+| `PublicKeyAsBase64` | `string` | Public key as Base64 |
 
 #### Constructor
 
@@ -139,18 +142,18 @@ public WgPeer(byte[] privateKey, byte[] publicKey)
 
 ### WgPeerGenerator
 
-Utility class for generating multiple peers efficiently.
+Efficient utility for generating multiple peers with memory-conscious patterns.
 
 #### Static Methods
 
 | Method | Description | Returns |
 |--------|-------------|---------|
-| `Create()` | Generates a single peer | `WgPeer` |
-| `Create(int count)` | Generates multiple peers with yield return | `IEnumerable<WgPeer>` |
+| `Create()` | Generates single peer | `WgPeer` |
+| `Create(int count)` | Generates multiple peers (yield return) | `IEnumerable<WgPeer>` |
 
 ### WgTunnel
 
-Represents a complete WireGuard tunnel configuration.
+Complete WireGuard tunnel configuration (immutable record struct).
 
 #### Constructor
 
@@ -158,8 +161,7 @@ Represents a complete WireGuard tunnel configuration.
 public WgTunnel(WgPeer? LocalPeer = null, WgPeer? RemotePeer = null, WgKey? PreSharedKey = null)
 ```
 
-- All parameters are optional
-- If not provided, random keys/peers are generated automatically
+All parameters optional - random keys generated automatically if not provided.
 
 #### Properties
 
@@ -167,180 +169,196 @@ public WgTunnel(WgPeer? LocalPeer = null, WgPeer? RemotePeer = null, WgKey? PreS
 |----------|------|-------------|
 | `LocalPeer` | `WgPeer` | Local peer (server/client) |
 | `RemotePeer` | `WgPeer` | Remote peer (client/server) |
-| `PreSharedKey` | `WgKey?` | Optional pre-shared key for additional security |
+| `PreSharedKey` | `WgKey?` | Optional pre-shared key for enhanced security |
 
-#### Methods
+#### Deconstruction
 
 ```csharp
-// Deconstruction support
 var (local, remote, psk) = tunnel;
 ```
 
 ### WgTools
 
-Utility class with constants for WireGuard operations.
+Utility constants for WireGuard operations.
 
 #### Constants
 
 | Constant | Value | Description |
 |----------|-------|-------------|
-| `KeySize` | `32` | Size in bytes of WireGuard keys |
+| `KeySize` | `32` | Standard WireGuard key size in bytes |
 
-## Compatibility
 
-This library generates keys that are fully compatible with:
-- ✅ Official WireGuard tools (`wg` command)
-- ✅ WireGuard-Go
+### PackageReference
+```xml
+<PackageReference Include="WireGuardTools" Version="0.0.1" />
+```
+
+## ✅ Compatibility & Verification
+
+This library generates keys fully compatible with:
+
+- ✅ Official WireGuard tools (`wg` command-line)
+- ✅ WireGuard-Go implementation
 - ✅ WireGuard kernel module
 - ✅ Any RFC 7748 compliant Curve25519 implementation
 
 ### Verification Example
 
-You can verify the generated keys work with the official WireGuard tools:
+Test compatibility with official WireGuard tools:
 
 ```bash
 # Generate a key with WireGuardTools
 # Private: eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=
 
-# Verify with wg command 
+# Verify with official wg command
 echo "eLyH7Dze4G8wceQKFmGnWJ6Dv2zAfgSLbxwN5UlzsWc=" | wg pubkey
 # Output: GL16o84YrQrHy7Ew7bmwDPM27MnilJ/y7bG4wyhUuGo=
 ```
 
-## Requirements
+## 🎯 Requirements & Support
 
-- **.NET 6.0 or higher** - Cross-platform support with consistent Curve25519 implementation
-- Standardized RFC 7748 Curve25519 parameters ensure compatibility across platforms
+### Minimum Requirements
+- **.NET 6.0 or higher** - Cross-platform Curve25519 support
+- RFC 7748 compliant runtime environment
 
-### Supported Frameworks
-
-- .NET 6.0
-- .NET 6.0-windows
-- .NET 7.0
-- .NET 7.0-windows
-- .NET 8.0
-- .NET 8.0-windows
+### Supported Target Frameworks
+- .NET 6.0 / 6.0-windows
+- .NET 7.0 / 7.0-windows
+- .NET 8.0 / 8.0-windows
 - .NET 9.0
 
-## Implementation Details
+### Platform Support
 
-The library uses explicit Curve25519 parameters as defined in RFC 7748:
+| Platform | Implementation | Optimization |
+|----------|---------------|--------------|
+| **Windows** | CNG (Cryptography Next Generation) | Hardware acceleration when available |
+| **Linux** | OpenSSL | Native performance with system libraries |
+| **macOS** | Security Framework | Optimized for Apple Silicon & Intel |
+
+*All platforms use identical RFC 7748 parameters ensuring consistent behavior.*
+
+## 🏗️ Implementation Details
+
+### Cryptographic Foundation
+
+Uses explicit RFC 7748 Curve25519 parameters:
 
 - **Curve Type**: Prime Montgomery curve
 - **Prime Field**: 2^255 - 19
-- **Generator Point**: Standardized base point for key generation
+- **Generator Point**: Standardized base point
 - **Order**: Curve order for cryptographic operations
-- **Cofactor**: 8 (as specified in RFC 7748)
+- **Cofactor**: 8 (RFC 7748 specification)
 
-Key generation follows the standard process:
-1. Create ECDiffieHellman instance with Curve25519 parameters
-2. Export key parameters including private key (D) and public key (Q.X)
-3. Ensure proper key length (32 bytes) with padding if necessary
-4. Return validated structures with immutable design
+### Key Generation Process
 
-## Performance
+1. Create `ECDiffieHellman` instance with explicit Curve25519 parameters
+2. Export key parameters (private key D, public key Q.X)
+3. Validate and ensure proper 32-byte length with padding if necessary
+4. Return validated immutable structures with defensive copying
 
-The library uses the native .NET cryptography stack with consistent cross-platform behavior:
+## ⚡ Performance & Design
 
-- ⚡ **Fast key generation** - Leverages platform-optimized implementations
-- 🔒 **Cryptographically secure** - Uses system entropy sources
-- 💾 **Memory efficient** - Lazy enumeration for multiple key generation using yield return
-- 🌐 **Cross-platform consistent** - Same RFC 7748 parameters on all platforms
-- ✅ **Input validation** - Runtime validation ensures key integrity
-- 🛡️ **Immutable design** - Defensive copying prevents accidental key modification
+### Performance Characteristics
+- **Fast Generation**: Platform-optimized native implementations
+- **Memory Efficient**: Lazy enumeration with yield return patterns
+- **Cryptographically Secure**: System entropy sources
+- **Cross-Platform Consistent**: Identical RFC 7748 behavior
 
-## Platform Support
+### Security & Design Principles
+- **Type Safety**: Immutable record structs prevent accidental modification
+- **Input Validation**: Runtime validation ensures key integrity
+- **Defensive Copying**: Prevents external mutation of internal key data
+- **Safe Logging**: Built-in methods prevent accidental key exposure
+- **Zero Trust**: All inputs validated, no assumptions about external data
 
-| Platform | Implementation | Notes |
-|----------|---------------|-------|
-| **Windows** | CNG (Cryptography Next Generation) | Hardware acceleration when available |
-| **Linux** | OpenSSL | Native performance with system crypto libraries |
-| **macOS** | Security Framework | Optimized for Apple silicon and Intel |
+## 💡 Usage Patterns
 
-*All platforms use standardized RFC 7748 Curve25519 parameters for consistent behavior.*
+### Simple Key Management
+```csharp
+// Individual keys for basic configuration
+var serverKey = WgKey.CreateRandom();
+var clientKey = WgKey.CreateRandom();
+```
 
-## Security Considerations
+### Peer-to-Peer VPN Setup
+```csharp
+// Two peers for direct P2P connection
+var peer1 = WgPeer.CreateRandom();
+var peer2 = WgPeer.CreateRandom();
+```
 
-- Keys are generated using cryptographically secure random number generators
-- Private keys should be handled securely and cleared from memory when no longer needed
-- The library uses standardized RFC 7748 Curve25519 parameters for consistent behavior
-- Uses proven platform-native cryptographic implementations
-- Cross-platform compatibility ensured through explicit parameter specification
-- Built-in validation prevents malformed keys from being created
-- Immutable structures with defensive copying prevent accidental modification
-- Safe logging methods prevent accidental key exposure in logs
+### Hub-and-Spoke Architecture
+```csharp
+// Server with multiple client peers
+var hubServer = WgPeer.CreateRandom();
+var clients = WgPeerGenerator.Create(50).ToList();
+```
 
-## Architecture
+### Enterprise Tunnel Management
+```csharp
+// Complete tunnel with enhanced security
+var tunnel = new WgTunnel(
+    LocalPeer: serverPeer,
+    RemotePeer: clientPeer,
+    PreSharedKey: WgKey.CreateRandom() // Optional PSK for post-quantum resistance
+);
+```
+
+## 📦 Project Structure
 
 ```
 WireGuardTools/
 ├── Generators/
 │   ├── Constants/
 │   │   └── WgCurve25519Constants.cs    # RFC 7748 curve parameters
-│   └── WgPeerGenerator.cs              # Key pair generation logic
-├── WgKey.cs                            # Universal key type
-├── WgPeer.cs                           # Key pair (peer) structure
+│   └── WgPeerGenerator.cs              # Efficient key pair generation
+├── WgKey.cs                            # Universal immutable key type
+├── WgPeer.cs                           # Immutable key pair structure  
 ├── WgTunnel.cs                         # Complete tunnel configuration
-├── WgPreSharedKey.cs                   # Legacy pre-shared key type
 └── WgTools.cs                          # Utility constants
 ```
 
-## Use Cases
+## 🔒 Security Considerations
 
-### Simple Key Management
-```csharp
-// Individual keys for configuration
-var serverKey = WgKey.CreateRandom();
-var clientKey = WgKey.CreateRandom();
-```
+- **Key Generation**: Uses cryptographically secure system RNG
+- **Memory Safety**: Defensive copying prevents external key mutation
+- **Immutable Design**: Record structs prevent accidental modification
+- **Input Validation**: All constructors validate key parameters
+- **Safe Logging**: Built-in truncation prevents accidental exposure
+- **Cross-Platform**: Consistent RFC 7748 parameters across all platforms
+- **Zero Dependencies**: Reduces attack surface, uses only .NET BCL
 
-### Peer-to-Peer Setup
-```csharp
-// Generate two peers for P2P connection
-var peer1 = WgPeer.CreateRandom();
-var peer2 = WgPeer.CreateRandom();
-```
+## 🤝 Contributing
 
-### Server with Multiple Clients
-```csharp
-var server = WgPeer.CreateRandom();
-var clients = WgPeerGenerator.Create(10).ToList();
-```
+Contributions welcome! Please:
 
-### Complete Tunnel Setup
-```csharp
-// Ready-to-use tunnel configuration
-var tunnel = new WgTunnel();
-// All keys generated automatically
-```
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all existing tests pass
+5. Submit a pull request
 
-## Migration from Earlier Versions
-
-If upgrading from earlier versions:
-
-- `WgKeyPair` → Use `WgPeer`
-- `WgKeyPairGenerator` → Use `WgPeerGenerator`
-- Individual keys → Use `WgKey` instead of raw byte arrays
-- Pre-shared keys → Use `WgKey` instead of `WgPreSharedKey`
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit issues and pull requests.
-
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-This library uses Curve25519 elliptic curve parameters based on RFC 7748 and StackOverflow contributions. Special thanks to Daniel J. Bernstein for designing Curve25519. See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for detailed acknowledgments.
+- **Daniel J. Bernstein** - Designer of Curve25519
+- **StackOverflow Contributors** - Yasar_yy and Deku Desu for .NET ECCurve parameters
+- **WireGuard Team** - For the excellent VPN protocol design
 
-## Support
+See [ATTRIBUTIONS.md](ATTRIBUTIONS.md) for detailed acknowledgments and references.
 
-- 📖 **Documentation**: Full API documentation available in code comments
-- 🐛 **Issues**: Report bugs or request features via GitHub Issues
-- 💡 **Questions**: Use GitHub Discussions for general questions
+## 📞 Support & Community
+
+- 📖 **Documentation**: Comprehensive XML docs in source code
+- 🐛 **Issues**: [GitHub Issues](../../issues) for bugs and feature requests
+- 💡 **Discussions**: [GitHub Discussions](../../discussions) for questions
+- 📧 **Security**: Report security issues privately via GitHub Security
 
 ---
 
 **Made with ❤️ for the .NET and WireGuard communities**
+
+*Secure, fast, and reliable WireGuard key generation for modern .NET applications*

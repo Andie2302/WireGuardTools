@@ -67,4 +67,5 @@ public class WgKey : IDisposable
 
         GC.SuppressFinalize(this);
     }
+    public override string ToString() => Base64;
 }

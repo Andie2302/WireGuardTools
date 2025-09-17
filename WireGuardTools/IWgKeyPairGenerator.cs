@@ -4,7 +4,7 @@ public interface IWgKeyPairGenerator
 {
     WgKeyPair GenerateKeyPair();
 }
-public interface ICustomWgKeyPairGenerator
+public interface IWgFromPrivateKeyKeyPairGenerator : IWgKeyPairGenerator
 {
-    WgKey GeneratePublicKeyFromPrivate(WgKey privateKey);
+    WgKeyPair GenerateKeyPair(WgKey privateKey);
 }

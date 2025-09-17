@@ -71,7 +71,7 @@ public static class WireGuardValidator
 
         try
         {
-            // Write private key to stdin
+            // Write a private key to stdin
             await process.StandardInput.WriteLineAsync(privateKeyBase64);
             await process.StandardInput.FlushAsync();
             process.StandardInput.Close();

@@ -9,9 +9,11 @@ public class WgKey : IDisposable
 
     public WgKey(byte[]? key = null)
     {
-        _key = key?.ToArray() ?? new byte[WgTools.KeySize];
-        if (key == null || _key.Length != WgTools.KeySize)
+        _key = new byte[WgTools.KeySize];
+        if (key?.Length != WgTools.KeySize)
             RandomNumberGenerator.Fill(_key);
+        else
+            Array.Copy(key, _key, WgTools.KeySize);
     }
 
     public static WgKey CreateRandom() => new();

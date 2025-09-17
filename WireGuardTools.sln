@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WireGuardTools", "WireGuardTools\WireGuardTools.csproj", "{CC6B3675-D2EA-4F73-871F-774D4096DFFA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC6B3675-D2EA-4F73-871F-774D4096DFFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC6B3675-D2EA-4F73-871F-774D4096DFFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC6B3675-D2EA-4F73-871F-774D4096DFFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC6B3675-D2EA-4F73-871F-774D4096DFFA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

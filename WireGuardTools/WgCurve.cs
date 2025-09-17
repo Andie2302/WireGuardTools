@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace WireGuardTools.Curves;
+namespace WireGuardTools;
 
 /// <summary>
 /// Provides functionality to generate WireGuard compatible key pairs using Curve25519.
@@ -11,7 +11,7 @@ public static class WgCurve
     /// A static, reusable instance of the Curve25519 parameters.
     /// This avoids creating a new ECCurve object on every key generation call.
     /// </summary>
-    public readonly static ECCurve Curve25519 = new ECCurve
+    public static readonly ECCurve Curve25519 = new()
     {
         CurveType = ECCurve.ECCurveType.PrimeMontgomery,
         Prime = WgCurve25519Constants.Prime,

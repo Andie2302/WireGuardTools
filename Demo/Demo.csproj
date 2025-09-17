@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\WgTest\WgTest.csproj" />
       <ProjectReference Include="..\WireGuardTools\WireGuardTools.csproj" />
     </ItemGroup>
 

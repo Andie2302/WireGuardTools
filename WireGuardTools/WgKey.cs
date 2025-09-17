@@ -4,14 +4,13 @@ namespace WireGuardTools;
 
 public class WgKey : IDisposable
 {
-    private const int KeySize = 32;
     private readonly byte[] _key;
     private bool _disposed;
 
     public WgKey(byte[]? key = null)
     {
-        _key = key?.ToArray() ?? new byte[KeySize];
-        if (key == null || _key.Length != KeySize)
+        _key = key?.ToArray() ?? new byte[WgTools.KeySize];
+        if (key == null || _key.Length != WgTools.KeySize)
             RandomNumberGenerator.Fill(_key);
     }
 
@@ -44,7 +43,7 @@ public class WgKey : IDisposable
         }
     }
 
-    public bool IsValid => !_disposed && _key.Length == KeySize;
+    public bool IsValid => !_disposed && _key.Length == WgTools.KeySize;
 
     public void Regenerate()
     {

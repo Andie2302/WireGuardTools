@@ -30,4 +30,5 @@ public class WgKeyPair : IDisposable
         PrivateKey.Dispose();
         PublicKey.Dispose();
     }
+    public override string ToString() => $"{PrivateKey} {PublicKey}";
 }

@@ -78,7 +78,7 @@ public class Curve25519KeyPairGeneratorTests
         var publicKeys = new HashSet<string>();
 
         // Act
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             using var keyPair = _generator.GenerateKeyPair();
             privateKeys.Add(keyPair.PrivateKey.Base64);
@@ -98,7 +98,7 @@ public class Curve25519KeyPairGeneratorTests
         var stopwatch = Stopwatch.StartNew();
 
         // Act
-        for (int i = 0; i < iterations; i++)
+        for (var i = 0; i < iterations; i++)
         {
             using var keyPair = _generator.GenerateKeyPair();
             // Just access the properties to ensure they're computed
@@ -133,7 +133,7 @@ public class Curve25519KeyPairGeneratorTests
         keyPair.PublicKey.Base64.Should().EndWith("=");
 
         // Should contain only valid base64 characters
-        foreach (char c in keyPair.PrivateKey.Base64) (char.IsLetterOrDigit(c) || c == '+' || c == '/' || c == '=').Should().BeTrue();
+        foreach (var c in keyPair.PrivateKey.Base64) (char.IsLetterOrDigit(c) || c == '+' || c == '/' || c == '=').Should().BeTrue();
     }
 
     // This test verifies that our generator produces keys compatible with WireGuard

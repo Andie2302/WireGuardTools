@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using FluentAssertions;
 using WireGuardTools;
 
 namespace WgTest;
@@ -20,11 +19,11 @@ public class Curve25519KeyPairGeneratorTests
         using var keyPair = _generator.GenerateKeyPair();
 
         // Assert
-        keyPair.Should().NotBeNull();
-        keyPair.PrivateKey.Should().NotBeNull();
-        keyPair.PublicKey.Should().NotBeNull();
-        keyPair.PrivateKey.IsValid.Should().BeTrue();
-        keyPair.PublicKey.IsValid.Should().BeTrue();
+        Assert.NotNull(keyPair);
+        Assert.NotNull(keyPair.PrivateKey);
+        Assert.NotNull(keyPair.PublicKey);
+        Assert.True(keyPair.PrivateKey.IsValid);
+        Assert.True(keyPair.PublicKey.IsValid);
     }
 
     [Fact]
@@ -34,8 +33,8 @@ public class Curve25519KeyPairGeneratorTests
         using var keyPair = _generator.GenerateKeyPair();
 
         // Assert
-        keyPair.PrivateKey.Size.Should().Be(WgTools.KeySize);
-        keyPair.PublicKey.Size.Should().Be(WgTools.KeySize);
+        Assert.Equal(WgTools.KeySize, keyPair.PrivateKey.Size);
+        Assert.Equal(WgTools.KeySize, keyPair.PublicKey.Size);
     }
 
     [Fact]
@@ -46,8 +45,8 @@ public class Curve25519KeyPairGeneratorTests
         using var keyPair2 = _generator.GenerateKeyPair();
 
         // Assert
-        keyPair1.PrivateKey.Base64.Should().NotBe(keyPair2.PrivateKey.Base64);
-        keyPair1.PublicKey.Base64.Should().NotBe(keyPair2.PublicKey.Base64);
+        Assert.NotEqual(keyPair2.PrivateKey.Base64, keyPair1.PrivateKey.Base64);
+        Assert.NotEqual(keyPair2.PublicKey.Base64, keyPair1.PublicKey.Base64);
     }
 
     [Fact]
@@ -57,15 +56,15 @@ public class Curve25519KeyPairGeneratorTests
         using var keyPair = _generator.GenerateKeyPair();
 
         // Assert
-        keyPair.PrivateKey.Base64.Length.Should().Be(44); // 32 bytes base64 encoded
-        keyPair.PublicKey.Base64.Length.Should().Be(44);
+        Assert.Equal(44, keyPair.PrivateKey.Base64.Length); // 32 bytes base64 encoded
+        Assert.Equal(44, keyPair.PublicKey.Base64.Length);
 
         // Should be valid base64
         var privateDecoded = Convert.FromBase64String(keyPair.PrivateKey.Base64);
         var publicDecoded = Convert.FromBase64String(keyPair.PublicKey.Base64);
 
-        privateDecoded.Length.Should().Be(32);
-        publicDecoded.Length.Should().Be(32);
+        Assert.Equal(32, privateDecoded.Length);
+        Assert.Equal(32, publicDecoded.Length);
     }
 
     [Theory]
@@ -86,8 +85,8 @@ public class Curve25519KeyPairGeneratorTests
         }
 
         // Assert
-        privateKeys.Should().HaveCount(count, "all private keys should be unique");
-        publicKeys.Should().HaveCount(count, "all public keys should be unique");
+        Assert.Equal(count, privateKeys.Count);
+        Assert.Equal(count, publicKeys.Count);
     }
 
     [Fact]
@@ -110,11 +109,11 @@ public class Curve25519KeyPairGeneratorTests
 
         // Assert
         // Should generate 100 key pairs in less than 5 seconds (very generous)
-        stopwatch.ElapsedMilliseconds.Should().BeLessThan(5000);
+        Assert.True(stopwatch.ElapsedMilliseconds < 5000);
 
         // Average should be less than 50ms per key pair (also generous)
         var avgMs = stopwatch.ElapsedMilliseconds / (double)iterations;
-        avgMs.Should().BeLessThan(50);
+        Assert.True(avgMs < 50);
     }
 
     [Fact]
@@ -125,15 +124,15 @@ public class Curve25519KeyPairGeneratorTests
 
         // Assert
         // WireGuard keys are 32-byte values
-        keyPair.PrivateKey.Key.Length.Should().Be(32);
-        keyPair.PublicKey.Key.Length.Should().Be(32);
+        Assert.Equal(32, keyPair.PrivateKey.Key.Length);
+        Assert.Equal(32, keyPair.PublicKey.Key.Length);
 
         // Base64 representation should end with '=' (padding)
-        keyPair.PrivateKey.Base64.Should().EndWith("=");
-        keyPair.PublicKey.Base64.Should().EndWith("=");
+        Assert.EndsWith("=", keyPair.PrivateKey.Base64);
+        Assert.EndsWith("=", keyPair.PublicKey.Base64);
 
         // Should contain only valid base64 characters
-        foreach (var c in keyPair.PrivateKey.Base64) (char.IsLetterOrDigit(c) || c == '+' || c == '/' || c == '=').Should().BeTrue();
+        Assert.True(keyPair.PrivateKey.Base64.All(c => char.IsLetterOrDigit(c) || c == '+' || c == '/' || c == '='));
     }
 
     // This test verifies that our generator produces keys compatible with WireGuard
@@ -149,15 +148,15 @@ public class Curve25519KeyPairGeneratorTests
         var publicBytes = keyPair.PublicKey.Key;
 
         // Private key should be a valid 32-byte value
-        privateBytes.Should().HaveCount(32);
-        privateBytes.Should().NotBeEquivalentTo(new byte[32]); // Should not be all zeros
+        Assert.Equal(32, privateBytes.Length);
+        Assert.False(privateBytes.All(b => b == 0));
 
         // Public key should be a valid 32-byte value
-        publicBytes.Should().HaveCount(32);
-        publicBytes.Should().NotBeEquivalentTo(new byte[32]); // Should not be all zeros
+        Assert.Equal(32, publicBytes.Length);
+        Assert.False(publicBytes.All(b => b == 0));
 
         // Keys should be different
-        privateBytes.Should().NotBeEquivalentTo(publicBytes);
+        Assert.NotEqual(publicBytes, privateBytes);
     }
 
     // Integration test that would verify compatibility with actual WireGuard tool

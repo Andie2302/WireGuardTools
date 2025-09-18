@@ -7,10 +7,4 @@ Console.WriteLine("Hello, World!");
 
 Console.WriteLine("This is a test.");
 
-Curve25519KeyPairGenerator generator = new();
-Console.WriteLine();
-foreach (var wgTunnel in WgTunnel.CreateRandom(10))
-{
-    Console.WriteLine(wgTunnel);
-    Console.WriteLine();
-}
+

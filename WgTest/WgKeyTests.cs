@@ -43,7 +43,7 @@ public class WgKeyTests
     {
         // Arrange
         var testKey = new byte[32];
-        for (int i = 0; i < 32; i++)
+        for (var i = 0; i < 32; i++)
             testKey[i] = (byte)i;
 
         // Act
@@ -128,7 +128,7 @@ public class WgKeyTests
     {
         // Arrange
         var testBytes = new byte[32];
-        for (int i = 0; i < 32; i++)
+        for (var i = 0; i < 32; i++)
             testBytes[i] = (byte)i;
 
         using var key = new WgKey(testBytes);

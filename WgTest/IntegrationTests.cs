@@ -44,7 +44,7 @@ public class IntegrationTests
         // Skip if WireGuard tools are not available
         if (!IsWireGuardToolAvailable()) return; // Skip test silently
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             // Arrange
             using var keyPair = _generator.GenerateKeyPair();

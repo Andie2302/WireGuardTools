@@ -1,6 +1,5 @@
 ﻿using WireGuardTools;
 using FluentAssertions;
-using Xunit;
 
 namespace WgTest;
 

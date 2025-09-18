@@ -29,7 +29,7 @@ public class PerformanceTests
         try
         {
             // Act
-            for (int i = 0; i < keyCount; i++) keyPairs.Add(_generator.GenerateKeyPair());
+            for (var i = 0; i < keyCount; i++) keyPairs.Add(_generator.GenerateKeyPair());
 
             stopwatch.Stop();
 
@@ -74,7 +74,7 @@ public class PerformanceTests
         var initialMemory = GC.GetTotalMemory(false);
 
         // Generate and dispose many key pairs
-        for (int i = 0; i < iterations; i++)
+        for (var i = 0; i < iterations; i++)
         {
             using var keyPair = _generator.GenerateKeyPair();
             // Access the keys to ensure they're fully initialized

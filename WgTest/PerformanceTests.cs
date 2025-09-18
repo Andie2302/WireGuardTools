@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using FluentAssertions;
 using WireGuardTools;
+using Xunit.Abstractions;
 
 namespace WgTest;
 
@@ -9,10 +10,12 @@ namespace WgTest;
 /// </summary>
 public class PerformanceTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
     private readonly Curve25519KeyPairGenerator _generator;
 
-    public PerformanceTests()
+    public PerformanceTests(ITestOutputHelper testOutputHelper)
     {
+        _testOutputHelper = testOutputHelper;
         _generator = new Curve25519KeyPairGenerator();
     }
 
@@ -50,8 +53,8 @@ public class PerformanceTests
                     break;
             }
 
-            Console.WriteLine($"Generated {keyCount} key pairs in {stopwatch.ElapsedMilliseconds}ms " +
-                              $"(avg: {avgMs:F2}ms per key)");
+            _testOutputHelper.WriteLine($"Generated {keyCount} key pairs in {stopwatch.ElapsedMilliseconds}ms " +
+                                        $"(avg: {avgMs:F2}ms per key)");
         }
         finally
         {

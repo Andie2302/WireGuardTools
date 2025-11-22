@@ -7,7 +7,8 @@ namespace WireGuardTools;
 /// Stellt eine SSH-Verbindung zu einem Server her, verwaltet diese und stellt Methoden zur 
 /// Befehlsausführung bereit. Implementiert IDisposable zur automatischen Ressourcenfreigabe.
 /// </summary>
-public class Terminal : IDisposable
+
+public sealed class Terminal : IDisposable
 {
     private SshClient? _sshClient;
     private bool _disposed = false;
@@ -17,26 +18,8 @@ public class Terminal : IDisposable
     /// </summary>
     public void Connect(string host, string username, string password)
     {
-        if (_sshClient != null && _sshClient.IsConnected)
-        {
-            throw new InvalidOperationException("Die Verbindung ist bereits hergestellt.");
-        }
-        
-        try
-        {
-            _sshClient = new SshClient(host, username, password);
-            _sshClient.Connect();
-        }
-        catch (SshAuthenticationException ex)
-        {
-            // Spezifische Ausnahme für Authentifizierungsfehler
-            throw new Exception($"SSH-Authentifizierungsfehler: {ex.Message}", ex);
-        }
-        catch (Exception ex)
-        {
-            // Andere Verbindungsfehler (Netzwerk, Host nicht erreichbar etc.)
-            throw new Exception($"Fehler beim Verbindungsaufbau: {ex.Message}", ex);
-        }
+        EnsureNotConnected();
+        ConnectInternal(() => new SshClient(host, username, password), "");
     }
 
     /// <summary>
@@ -44,31 +27,8 @@ public class Terminal : IDisposable
     /// </summary>
     public void ConnectWithKey(string host, string username, string privateKeyPath, string passphrase)
     {
-        if (_sshClient != null && _sshClient.IsConnected)
-        {
-            throw new InvalidOperationException("Die Verbindung ist bereits hergestellt.");
-        }
-
-        try
-        {
-            var privateKeyFile = new PrivateKeyFile(privateKeyPath, passphrase);
-            var connectionInfo = new ConnectionInfo(
-                host,
-                username,
-                new PrivateKeyAuthenticationMethod(username, privateKeyFile)
-            );
-
-            _sshClient = new SshClient(connectionInfo);
-            _sshClient.Connect();
-        }
-        catch (SshAuthenticationException ex)
-        {
-            throw new Exception($"SSH-Authentifizierungsfehler (Key): {ex.Message}", ex);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Fehler beim Verbindungsaufbau (Key): {ex.Message}", ex);
-        }
+        EnsureNotConnected();
+        ConnectInternal(() => CreateSshClientWithKey(host, username, privateKeyPath, passphrase), " (Key)");
     }
 
     /// <summary>
@@ -76,29 +36,19 @@ public class Terminal : IDisposable
     /// </summary>
     public string ExecuteCommand(string command)
     {
-        if (_sshClient == null || !_sshClient.IsConnected)
+        EnsureConnected();
+
+        using var cmd = _sshClient?.CreateCommand(command);
+        var output = cmd?.Execute();
+        if (cmd is not { ExitStatus: 0 })
         {
-            throw new InvalidOperationException("SSH-Verbindung ist nicht hergestellt. Bitte zuerst Connect() aufrufen.");
+            throw new SshCommandException(
+                $"Befehl '{command}' schlug fehl mit Exit Code {cmd?.ExitStatus}. Fehler: {cmd?.Error}", 
+                cmd.ExitStatus, 
+                cmd.Error
+            );
         }
-
-        using (var cmd = _sshClient.CreateCommand(command))
-        {
-            // Die Execute()-Methode führt den Befehl aus und wartet auf die vollständige Beendigung.
-            string output = cmd.Execute();
-
-            if (cmd.ExitStatus != 0)
-            {
-                // Fehlerbehandlung: Bei einem Exit-Code ungleich Null einen Fehler werfen,
-                // der die Fehlermeldung (Stderr) des Servers enthält.
-                throw new SshCommandException(
-                    $"Befehl '{command}' schlug fehl mit Exit Code {cmd.ExitStatus}. Fehler: {cmd.Error}", 
-                    cmd.ExitStatus, 
-                    cmd.Error
-                );
-            }
-
-            return output;
-        }
+        return output ?? string.Empty;
     }
 
     /// <summary>
@@ -113,33 +63,69 @@ public class Terminal : IDisposable
     }
 
     // --- IDisposable Implementierung ---
-
     /// <summary>
     /// Implementiert IDisposable: Gibt die verwalteten Ressourcen frei.
     /// </summary>
     public void Dispose()
     {
-        // Sicherstellen, dass die Dispose-Methode nur einmal aufgerufen wird.
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
-        if (!_disposed)
+        if (_disposed) return;
+        if (disposing)
         {
-            if (disposing)
-            {
-                // Freigabe verwalteter Ressourcen (SshClient)
-                Close();
-                _sshClient?.Dispose();
-                _sshClient = null;
-            }
-
-            // Freigabe unmanaged Ressourcen (hier nicht relevant)
-
-            _disposed = true;
+            Close();
+            _sshClient?.Dispose();
+            _sshClient = null;
         }
+        _disposed = true;
+    }
+
+    private void EnsureNotConnected()
+    {
+        if (_sshClient is { IsConnected: true })
+        {
+            throw new InvalidOperationException("Die Verbindung ist bereits hergestellt.");
+        }
+    }
+
+    private void EnsureConnected()
+    {
+        if (_sshClient is not { IsConnected: true })
+        {
+            throw new InvalidOperationException("SSH-Verbindung ist nicht hergestellt. Bitte zuerst Connect() aufrufen.");
+        }
+    }
+
+    private void ConnectInternal(Func<SshClient> createClient, string errorSuffix)
+    {
+        try
+        {
+            _sshClient = createClient();
+            _sshClient.Connect();
+        }
+        catch (SshAuthenticationException ex)
+        {
+            throw new Exception($"SSH-Authentifizierungsfehler{errorSuffix}: {ex.Message}", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Fehler beim Verbindungsaufbau{errorSuffix}: {ex.Message}", ex);
+        }
+    }
+
+    private static SshClient CreateSshClientWithKey(string host, string username, string privateKeyPath, string passphrase)
+    {
+        var privateKeyFile = new PrivateKeyFile(privateKeyPath, passphrase);
+        var connectionInfo = new ConnectionInfo(
+            host,
+            username,
+            new PrivateKeyAuthenticationMethod(username, privateKeyFile)
+        );
+        return new SshClient(connectionInfo);
     }
 }
 

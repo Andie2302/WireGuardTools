@@ -1,8 +1,17 @@
 ﻿using Renci.SshNet;
-using Renci.SshNet.Common;
-using System.IO;
 
 namespace WireGuardTools;
+
+/// <summary>
+/// Exception thrown when SSH authentication fails.
+/// </summary>
+public class SshAuthenticationException(string message, Exception innerException) : Exception(message, innerException);
+
+/// <summary>
+/// Exception thrown when SSH connection fails.
+/// </summary>
+public class SshConnectionException(string message, Exception innerException) : Exception(message, innerException);
+
 
 /// <summary>
 /// Manages the lifecycle of the SSH and SCP connections to a remote host based on provided settings.
@@ -15,8 +24,9 @@ public sealed class TerminalConnection : IDisposable
 
     private readonly ConnectionSettings _settings;
     private SshClient? _sshClient;
-    private ScpClient? _scpClient; // Wird für Datei-Operationen benötigt
-    private bool _disposed = false;
+    private ScpClient? _scpClient;
+    private PrivateKeyFile? _privateKeyFile; // Speichern für späteres Disposal
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TerminalConnection"/> class.
@@ -39,32 +49,31 @@ public sealed class TerminalConnection : IDisposable
         ConnectionInfo connectionInfo;
         string authTypeSuffix;
 
-        // Pattern Matching zur Erstellung der ConnectionInfo basierend auf den Einstellungen
-        if (_settings is PasswordConnectionSettings passwordSettings)
+        switch (_settings)
         {
-            connectionInfo = new ConnectionInfo(
-                passwordSettings.Host, 
-                passwordSettings.Port, 
-                passwordSettings.Username, 
-                new PasswordAuthenticationMethod(passwordSettings.Username, passwordSettings.Password)
-            );
-            authTypeSuffix = "";
-        }
-        else if (_settings is KeyConnectionSettings keySettings)
-        {
-            // Achtung: PrivateKeyFile muss disposed werden
-            using var privateKeyFile = new PrivateKeyFile(keySettings.PrivateKeyPath, keySettings.Passphrase);
-            connectionInfo = new ConnectionInfo(
-                keySettings.Host,
-                keySettings.Port,
-                keySettings.Username,
-                new PrivateKeyAuthenticationMethod(keySettings.Username, privateKeyFile)
-            );
-            authTypeSuffix = " (Key)";
-        }
-        else
-        {
-            throw new NotSupportedException("Unsupported connection settings type.");
+            // Pattern Matching zur Erstellung der ConnectionInfo basierend auf den Einstellungen
+            case PasswordConnectionSettings passwordSettings:
+                connectionInfo = new ConnectionInfo(
+                    passwordSettings.Host, 
+                    passwordSettings.Port, 
+                    passwordSettings.Username, 
+                    new PasswordAuthenticationMethod(passwordSettings.Username, passwordSettings.Password)
+                );
+                authTypeSuffix = "";
+                break;
+            case KeyConnectionSettings keySettings:
+                // PrivateKeyFile als Feld speichern und später in Dispose() aufräumen
+                _privateKeyFile = new PrivateKeyFile(keySettings.PrivateKeyPath, keySettings.Passphrase);
+                connectionInfo = new ConnectionInfo(
+                    keySettings.Host,
+                    keySettings.Port,
+                    keySettings.Username,
+                    new PrivateKeyAuthenticationMethod(keySettings.Username, _privateKeyFile)
+                );
+                authTypeSuffix = " (Key)";
+                break;
+            default:
+                throw new NotSupportedException("Unsupported connection settings type.");
         }
 
         SshClient? sshClient = null;
@@ -84,15 +93,31 @@ public sealed class TerminalConnection : IDisposable
         }
         catch (SshAuthenticationException ex)
         {
+            // Cleanup bei Fehler
             sshClient?.Dispose();
             scpClient?.Dispose();
-            throw new Exception($"SSH-Authentifizierungsfehler{authTypeSuffix}: {ex.Message}", ex);
+            _privateKeyFile?.Dispose();
+            
+            // Felder auf null setzen für konsistenten Zustand
+            _sshClient = null;
+            _scpClient = null;
+            _privateKeyFile = null;
+            
+            throw new SshAuthenticationException($"SSH-Authentifizierungsfehler{authTypeSuffix}: {ex.Message}", ex);
         }
         catch (Exception ex)
         {
+            // Cleanup bei Fehler
             sshClient?.Dispose();
             scpClient?.Dispose();
-            throw new Exception($"Fehler beim Verbindungsaufbau{authTypeSuffix}: {ex.Message}", ex);
+            _privateKeyFile?.Dispose();
+            
+            // Felder auf null setzen für konsistenten Zustand
+            _sshClient = null;
+            _scpClient = null;
+            _privateKeyFile = null;
+            
+            throw new SshConnectionException($"Fehler beim Verbindungsaufbau{authTypeSuffix}: {ex.Message}", ex);
         }
     }
     
@@ -155,8 +180,10 @@ public sealed class TerminalConnection : IDisposable
             Close();
             _sshClient?.Dispose();
             _scpClient?.Dispose();
+            _privateKeyFile?.Dispose(); // PrivateKeyFile aufräumen
             _sshClient = null;
             _scpClient = null;
+            _privateKeyFile = null;
         }
         
         _disposed = true;

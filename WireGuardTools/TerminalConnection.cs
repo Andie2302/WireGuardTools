@@ -199,20 +199,18 @@ public sealed class TerminalConnection : IDisposable
         }
     }
     
-    private static string ExecuteAndValidateCommand(SshCommand cmd, string command)
+    
+private static string ExecuteAndValidateCommand(SshCommand cmd, string command)
+{
+    var output = cmd.Execute();
+    var exitStatus = cmd.ExitStatus;
+    
+    if (exitStatus == 0)
     {
-        var output = cmd.Execute();
-        
-        if (cmd.ExitStatus != 0)
-        {
-            // SshCommandException muss im Projekt existieren, wie im vorherigen Code-Set.
-             throw new SshCommandException(
-                $"Befehl '{command}' schlug fehl mit Exit Code {cmd.ExitStatus}. Fehler: {cmd.Error}",
-                cmd.ExitStatus,
-                cmd.Error
-            );
-        }
-        
         return output;
     }
+
+    var errorMessage = $"Befehl '{command}' schlug fehl mit Exit Code {exitStatus}. Fehler: {cmd.Error}";
+    throw new SshCommandException(errorMessage, exitStatus, cmd.Error);
+}
 }

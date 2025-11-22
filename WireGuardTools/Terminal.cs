@@ -1,4 +1,6 @@
-﻿namespace WireGuardTools;
+﻿using Renci.SshNet.Common;
+
+namespace WireGuardTools;
 
 /// <summary>
 /// Die öffentliche Schnittstelle zur Durchführung von Remote-Operationen.

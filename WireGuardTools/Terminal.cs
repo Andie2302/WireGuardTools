@@ -8,7 +8,6 @@ namespace WireGuardTools;
 /// </summary>
 public sealed class Terminal : IDisposable
 {
-    // KORREKTUR: Das Feld muss vom Typ TerminalConnection sein und nicht Terminal.
     private readonly TerminalConnection _connection;
 
     /// <summary>
@@ -32,7 +31,6 @@ public sealed class Terminal : IDisposable
             Username = username, 
             Password = password 
         };
-        // TerminalConnection mit den Einstellungen erstellen
         var connection = new TerminalConnection(settings);
         return new Terminal(connection);
     }
@@ -50,12 +48,9 @@ public sealed class Terminal : IDisposable
             PrivateKeyPath = privateKeyPath, 
             Passphrase = passphrase 
         };
-        // TerminalConnection mit den Einstellungen erstellen
         var connection = new TerminalConnection(settings);
         return new Terminal(connection);
     }
-    
-    // Alle Instanz-Methoden delegieren an die TerminalConnection-Instanz
 
     /// <summary>
     /// Baut die Verbindung zum Remote-Host auf.

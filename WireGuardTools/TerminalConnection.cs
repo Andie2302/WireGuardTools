@@ -25,7 +25,7 @@ public sealed class TerminalConnection : IDisposable
     private readonly ConnectionSettings _settings;
     private SshClient? _sshClient;
     private ScpClient? _scpClient;
-    private PrivateKeyFile? _privateKeyFile; // Speichern für späteres Disposal
+    private PrivateKeyFile? _privateKeyFile;
     private bool _disposed;
 
     /// <summary>
@@ -51,7 +51,6 @@ public sealed class TerminalConnection : IDisposable
 
         switch (_settings)
         {
-            // Pattern Matching zur Erstellung der ConnectionInfo basierend auf den Einstellungen
             case PasswordConnectionSettings passwordSettings:
                 connectionInfo = new ConnectionInfo(
                     passwordSettings.Host, 
@@ -62,7 +61,6 @@ public sealed class TerminalConnection : IDisposable
                 authTypeSuffix = "";
                 break;
             case KeyConnectionSettings keySettings:
-                // PrivateKeyFile als Feld speichern und später in Dispose() aufräumen
                 _privateKeyFile = new PrivateKeyFile(keySettings.PrivateKeyPath, keySettings.Passphrase);
                 connectionInfo = new ConnectionInfo(
                     keySettings.Host,
@@ -81,24 +79,20 @@ public sealed class TerminalConnection : IDisposable
 
         try
         {
-            // SSH Client (für Befehle)
             sshClient = new SshClient(connectionInfo);
             sshClient.Connect();
             _sshClient = sshClient;
 
-            // SCP Client (für Datei-Übertragung)
             scpClient = new ScpClient(connectionInfo);
             scpClient.Connect();
             _scpClient = scpClient;
         }
         catch (SshAuthenticationException ex)
         {
-            // Cleanup bei Fehler
             sshClient?.Dispose();
             scpClient?.Dispose();
             _privateKeyFile?.Dispose();
-            
-            // Felder auf null setzen für konsistenten Zustand
+
             _sshClient = null;
             _scpClient = null;
             _privateKeyFile = null;
@@ -107,12 +101,10 @@ public sealed class TerminalConnection : IDisposable
         }
         catch (Exception ex)
         {
-            // Cleanup bei Fehler
             sshClient?.Dispose();
             scpClient?.Dispose();
             _privateKeyFile?.Dispose();
-            
-            // Felder auf null setzen für konsistenten Zustand
+
             _sshClient = null;
             _scpClient = null;
             _privateKeyFile = null;
@@ -180,7 +172,7 @@ public sealed class TerminalConnection : IDisposable
             Close();
             _sshClient?.Dispose();
             _scpClient?.Dispose();
-            _privateKeyFile?.Dispose(); // PrivateKeyFile aufräumen
+            _privateKeyFile?.Dispose();
             _sshClient = null;
             _scpClient = null;
             _privateKeyFile = null;
@@ -219,7 +211,6 @@ public sealed class TerminalConnection : IDisposable
 
     private void EnsureConnected()
     {
-        // Beide Clients (SSH für Befehle, SCP für Dateien) müssen verbunden sein.
         if (_sshClient?.IsConnected != true || _scpClient?.IsConnected != true)
         {
             throw new InvalidOperationException(NotConnectedError);
